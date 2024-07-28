@@ -1,4 +1,6 @@
 * Org Roam Daily Reflection
+Reflect on your org-roam dailies.
+
 Shows a range of split windows, each with an org-roam daily in them, at specified intervals. (E.g. Show the daily for today on the last five years; show the last four days of dailies; show the daily for the last two fortnights; &c.)
 
 ** Installation
