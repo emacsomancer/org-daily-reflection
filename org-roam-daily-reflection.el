@@ -43,6 +43,9 @@
 ;;; Code:
 (eval-when-compile (require 'cl-lib)) ;; for cl-loops
 
+(require 'org)
+(require 'org-roam)
+
 (defgroup org-roam-daily-reflection ()
   "Compare N org-roam dailies at M intervals."
   :group 'org)
