@@ -1,0 +1,29 @@
+* Org Roam Daily Reflection
+Shows a range of split windows, each with an org-roam daily in them, at specified intervals. (E.g. Show the daily for today on the last five years; show the last four days of dailies; show the daily for the last two fortnights; &c.)
+
+** Installation
+Not yet on MELPA or similar.
+
+Install with [[https://github.com/progfolio/elpaca][elpaca]]:
+#+begin_src elisp
+(use-package org-roam-daily-reflection
+  :ensure (:host github :repo "emacsomancer/org-roam-daily-reflection"))
+#+end_src
+
+Or [[https://github.com/slotThe/vc-use-package][vc-use-package]]:
+#+begin_src elisp
+(use-package org-roam-daily-reflection
+  :vc (:fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
+  #+end_src
+
+Or [[https://github.com/quelpa/quelpa][quelpa]]:
+#+begin_src elisp
+(use-package org-roam-daily-reflection
+  :quelpa (org-roam-daily-reflection :fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
+#+end_src
+  
+Or [[https://github.com/radian-software/straight.el][straight]]:
+#+begin_src elisp
+(use-package org-roam-daily-reflection
+  :straight (org-roam-daily-reflection :type git :host github :repo "emacsomancer/org-roam-daily-reflection"))
+#+end_src
