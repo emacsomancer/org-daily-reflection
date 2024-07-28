@@ -103,8 +103,8 @@ from the current org-mode daily. Choices for `m' are `year', `month',
 appropriate configuration."
   (let ((split-direction org-roam-daily-reflection-direction-of-window-splits))
     (when (equal split-direction 'auto)
-      (let ((width (display-pixel-width))
-            (height (display-pixel-height)))
+      (let ((width (frame-width))
+            (height (frame-height)))
         ;; if screen is less than 80 pixes in width, or the
         ;; display is longer than it is wide, then set
         ;; split to horizontal, otherwise vertical.
@@ -115,7 +115,10 @@ appropriate configuration."
           (setq split-direction 'vertical))))
     (cl-loop for i from (1- no-of-splits) downto 1 
              do (if (equal split-direction 'vertical)
+                    ;; (condition-case nil
                     (split-window-right)
+                  ;; (progn (delete-other-windows)
+                  ;; (error "can't do that")))
                   (split-window-below)))))
 
 (defun org-roam-reflect--prev-node-extant-file-p (org-date)
