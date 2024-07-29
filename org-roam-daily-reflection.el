@@ -174,7 +174,7 @@ appropriate configuration."
                                                (concat "--" (number-to-string back-by) "d")
                                                nil (org-time-string-to-time org-curr-date)))))
           (t (user-error "Unrecognised unit.")))
-    org-new-date
+    ;; org-new-date
     ;; `org-roam-dailies--capture' with non-nil GOTO optional arg
     ;;   goes to the note without creating an entry;
     ;;   and creates a daily-note for TIME (first arg) if necessary.
