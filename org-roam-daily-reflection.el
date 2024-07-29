@@ -96,7 +96,7 @@ from the current org-mode daily. Choices for `m' are `year', `month',
   ;; and successively find the journal entry for those dailies
   (cl-loop for i from (1- n) downto 1
            do (org-roam-reflect--open-prev-journal-entry
-               (org-read-date nil nil buffer-file-name)
+               (org-read-date nil nil (file-name-base buffer-file-name))
                i ;; start with greatest number for furthest back
                m))  
   (goto-char (point-min)))
