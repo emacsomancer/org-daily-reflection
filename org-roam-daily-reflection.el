@@ -99,7 +99,7 @@ from the current org-mode daily. Choices for `m' are `year', `month',
                (org-read-date nil nil buffer-file-name)
                i ;; start with greatest number for furthest back
                m))  
-  (beginning-of-buffer))
+  (goto-char (point-min)))
 
 (defun org-roam-reflect--determine-splits (no-of-splits)
   "Split the frame into `no-of-splits' number of windows in the
