@@ -101,24 +101,6 @@ non-extant daily journals."
   :group 'org-roam-daily-reflection
   :type 'boolean)
 
-;;; Check if appropriate daily-note
-(defun org-roam-daily-reflect--daily-note-p ()
-  "Return t if current-buffer is an org-mode file in
-`org-roam-daily-reflection-dailies-directory' (which is set by default
-to `org-roam-dailies-directory' if available), nil otherwise."
-  (when-let ((a (expand-file-name
-                 (buffer-file-name (buffer-base-buffer))))
-             (b (expand-file-name
-                 org-roam-daily-reflection-dailies-directory)))
-    (setq a (expand-file-name a))
-    (if (and (eq major-mode 'org-mode)
-             (unless (and a b (equal (file-truename a) (file-truename b)))
-               (string-prefix-p (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                                          (expand-file-name b) t t)
-                                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                                          (expand-file-name a) t t))))
-        t nil)))
-
 ;;; Main function
 (defun org-roam-daily-reflect (&optional m n)
   "Show the previous `n' number of `m' time spans of org-roam dailies
@@ -191,6 +173,23 @@ and \"century\"."
       (when org-roam-daily-reflection--unix-time-issue-maybe
         (message "Warning: dates before 1970-1-1 or after 2038-1-1 cannot always be represented correctly.
 See docstring for `org-read-date-force-compatible-dates' for more information.")))))
+
+(defun org-roam-daily-reflect--daily-note-p ()
+  "Return t if current-buffer is an org-mode file in
+`org-roam-daily-reflection-dailies-directory' (which is set by default
+to `org-roam-dailies-directory' if available), nil otherwise."
+  (when-let ((a (expand-file-name
+                 (buffer-file-name (buffer-base-buffer))))
+             (b (expand-file-name
+                 org-roam-daily-reflection-dailies-directory)))
+    (setq a (expand-file-name a))
+    (if (and (eq major-mode 'org-mode)
+             (unless (and a b (equal (file-truename a) (file-truename b)))
+               (string-prefix-p (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                                          (expand-file-name b) t t)
+                                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                                          (expand-file-name a) t t))))
+        t nil)))
 
 (defun org-roam-reflect--determine-splits (no-of-splits)
   "Split the frame into `no-of-splits' number of windows in the
@@ -319,9 +318,6 @@ appropriate configuration."
   (let (;; set locally to allow proper opening of potential entries:
         (org-read-date-force-compatible-dates nil))
 
-    ;; REMOVE ME:
-    ;; (message (concat "something: " earlier-journal-entry))
-    
     ;; If it is available, then run `org-roam-dailies--capture'
     ;; with non-nil GOTO optional arg (this seems the best way
     ;; to open both existing and nascent org-roam files)
@@ -335,8 +331,8 @@ appropriate configuration."
                         earlier-journal-entry
                         nil) t)
       
-      ;; Else, for now just try opening the file, if extant
-      ;; and make a note that no entry exists otherwise.
+      ;; Else, if not using Org-roam, for now just try opening the file, if extant
+      ;; and post a message that no entry exists otherwise.
       (if (org-roam-reflect--prev-node-extant-file earlier-journal-entry)
           (find-file (concat (expand-file-name org-roam-daily-reflection-dailies-directory)
                              "/" earlier-journal-entry ".org"))
@@ -361,7 +357,7 @@ appropriate configuration."
     (unless (org-roam-reflect--prev-node-extant-file earlier-journal-entry)
       (set-buffer-modified-p nil)))
     
-    ;; move the point to the next window (right or down).
+    ;; move the window focus/active point to the next window (right or down).
     (other-window 1))
 
 ;;; various predefined reflection commands
