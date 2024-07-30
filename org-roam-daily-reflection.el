@@ -89,9 +89,9 @@ from the current org-mode daily. Choices for `m' are `year', `month',
                 (string-to-number (message "%s"
                                            (read-number (concat "How many " (symbol-name m) "s? ")))))
               3))
-  (delete-other-windows)
+  ;; (delete-other-windows)
   (org-roam-reflect--determine-splits n) ;; create the splits
-  (balance-windows)
+  ;; (balance-windows)
   ;; start from the furthest back `m' (`n' `m's ago)
   ;; and successively find the journal entry for those dailies
   (cl-loop for i from (1- n) downto 1
@@ -116,13 +116,22 @@ appropriate configuration."
             ;; for above: actually, not floating point, so?
             (setq split-direction 'horizontal)
           (setq split-direction 'vertical))))
-    (cl-loop for i from (1- no-of-splits) downto 1 
-             do (if (equal split-direction 'vertical)
-                    ;; (condition-case nil
-                    (split-window-right)
-                  ;; (progn (delete-other-windows)
-                  ;; (error "can't do that")))
-                  (split-window-below)))))
+    ;; try to split window `no-of-splits' less one times
+    (let ((reflect-split (if (equal split-direction 'vertical)
+                             #'split-window-right
+                           #'split-window-below)))
+      (window-configuration-to-register 'org-roam-daily-reflect) ;; save current window config
+      (unless ;; restore window configuration and notify user if error in splitting
+          (ignore-errors ;; return nil if error
+                (delete-other-windows)
+                (cl-loop for i from (1- no-of-splits) downto 1 
+                         do
+                         (progn
+                           (funcall reflect-split)
+                           (balance-windows)))
+                t) ;; if successful
+        (jump-to-register 'org-roam-daily-reflect) ;; restore old window config, if split failed
+        (error "Window too small.")))))
 
 (defun org-roam-reflect--prev-node-extant-file-p (org-date)
   "Determines whether an org-roam daily already exists for
