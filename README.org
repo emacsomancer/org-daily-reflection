@@ -9,7 +9,7 @@ But you could also look at the last six days of daily journals, or dailies at ot
 
 A general interactive interface can be accessed via the command
 =org-roam-daily-reflect=, which can also be passed a span and range number
-(e.g. ='year= and =3=, to get dailies comparing this day on the last three years.)
+(e.g. "year" and "3", to get dailies comparing this day on the last three years.)
 
 A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies).
 
