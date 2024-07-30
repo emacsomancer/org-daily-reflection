@@ -1,30 +1,38 @@
 * Org Roam Daily Reflection
-Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries.
+Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Shows a range of split windows, each with an org-roam daily in them, at specified intervals. 
 
-Shows a range of split windows, each with an org-roam daily in them, at specified intervals. (E.g. Show the daily for today on the last five years; show the last four days of dailies; show the daily for the last two fortnights; &c.)
+You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
+
+But you could also look at the last six days of daily journals, or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
+
+A general interactive interface can be accessed via the command
+=org-roam-daily-reflect=, which can also be passed a span and range number
+(e.g. ='year= and =3=, to get dailies comparing this day on the last three years.)
+
+A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies).
 
 ** Installation
 Not yet on MELPA or similar.
 
-Install with [[https://github.com/progfolio/elpaca][elpaca]]:
+You can manually clone/download and =require=, or install with an alternative/enhanced package manager, like [[https://github.com/progfolio/elpaca][elpaca]]:
 #+begin_src elisp
 (use-package org-roam-daily-reflection
   :ensure (:host github :repo "emacsomancer/org-roam-daily-reflection"))
 #+end_src
 
-Or [[https://github.com/slotThe/vc-use-package][vc-use-package]]:
+or [[https://github.com/slotThe/vc-use-package][vc-use-package]] (probably the lightest-weight option):
 #+begin_src elisp
 (use-package org-roam-daily-reflection
   :vc (:fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
   #+end_src
 
-Or [[https://github.com/quelpa/quelpa][quelpa]]:
+or [[https://github.com/quelpa/quelpa][quelpa]]:
 #+begin_src elisp
 (use-package org-roam-daily-reflection
   :quelpa (org-roam-daily-reflection :fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
 #+end_src
   
-Or [[https://github.com/radian-software/straight.el][straight]]:
+or [[https://github.com/radian-software/straight.el][straight]]:
 #+begin_src elisp
 (use-package org-roam-daily-reflection
   :straight (org-roam-daily-reflection :type git :host github :repo "emacsomancer/org-roam-daily-reflection"))
