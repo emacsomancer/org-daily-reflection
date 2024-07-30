@@ -3,6 +3,8 @@ Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Sh
 
 You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
 
+[[./images/n-year-diary.png]]
+
 But you could also look at the last six days of daily journals, or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
 
 A general interactive interface can be accessed via the command
@@ -10,6 +12,8 @@ A general interactive interface can be accessed via the command
 (e.g. ='year= and =3=, to get dailies comparing this day on the last three years.)
 
 A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies).
+
+[Note: Choosing the "year" span has special behaviour on leap days.]
 
 ** Installation
 Not yet on MELPA or similar.
@@ -37,3 +41,6 @@ or [[https://github.com/radian-software/straight.el][straight]]:
 (use-package org-roam-daily-reflection
   :straight (org-roam-daily-reflection :type git :host github :repo "emacsomancer/org-roam-daily-reflection"))
 #+end_src
+
+** Notes
+Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
