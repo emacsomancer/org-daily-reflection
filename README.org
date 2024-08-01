@@ -1,11 +1,17 @@
 * Org Roam Daily Reflection
 Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Shows a range of split windows, each with an org-roam daily in them, at specified intervals. 
 
-You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
-
 [[./images/n-year-diary.jpg]]
 
-But you could also look at the last six days of daily journals, or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
+You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
+
+[[./images/3-years.png][./images/3-years.png]]
+
+But you could also look at the last five days of daily journals...
+
+[[./images/5-days.png][./images/5-days.png]]
+
+...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
 
 A general interactive interface can be accessed via the command
 =org-roam-daily-reflect=, which can also be passed a span and range number
@@ -13,7 +19,14 @@ A general interactive interface can be accessed via the command
 
 A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies).
 
-[Note: Choosing the "year" span has special behaviour on leap days.]
+** Details and Customisation
+Org Roam Daily Reflect does not, in fact, actually require the Org-roam package, so it could be used (in theory) with other daily journal systems. It optionally uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. It also tries setting the location it uses for looking up dailies (set in  =org-roam-daily-reflection-dailies-directory=) to the value of =org-roam-dailies-directory=, but this variable can be manually set.
+
+Check =customize= for various other options, including direction of window splits, whether leap days have special behaviour, whether or not the capture template is used to create potential (but marked unmodified) journal entries for dates without current journal entries (this only works if org-roam is available and can be disabled in any case), and (if org-roam capture templates are used) if a capture key is passed to the =org-roam-dailies--capture= function.
+
+The default time spans are "day", "week", "fortnight", "month", and "year", but this can be customised, and it will also recognise "decade" and "century", though this is likely of little use to most users as Org-roam was first released in 2020, (and Org-mode itself only in 2003), but potentially users might have "back-created" entries pre-dating Org-roam (or Org, or their own births).
+
+[[./images/5-centuries.png][./images/5-centuries.png]]
 
 ** Installation
 Not yet on MELPA or similar.

@@ -369,9 +369,9 @@ appropriate configuration."
     ;; (this prevents littering `buffers' with spurious would-be files).
     (unless (org-roam-reflect--prev-node-extant-file earlier-journal-entry)
       (set-buffer-modified-p nil)))
-    
-    ;; move the window focus/active point to the next window (right or down).
-    (other-window 1))
+  
+  ;; move the window focus/active point to the next window (right or down).
+  (other-window 1))
 
 ;;; various predefined reflection commands
 (defun org-roam-reflect-on-last-three-years ()
