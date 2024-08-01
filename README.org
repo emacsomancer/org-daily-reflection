@@ -5,11 +5,11 @@ Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Sh
 
 You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
 
-[[./images/3-years.png][./images/3-years.png]]
+[[./images/5-years.png][./images/5-years.png]]
 
-But you could also look at the last five days of daily journals...
+But you could also look at the last three days of daily journals...
 
-[[./images/5-days.png][./images/5-days.png]]
+[[./images/3-days.png][./images/3-days.png]]
 
 ...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
 
