@@ -95,6 +95,13 @@ You can also add `decade' and/or `century' to this list if you use these spans."
   :group 'org-roam-daily-reflection
   :type 'string)
 
+(defcustom org-roam-daily-reflection-capture-keys nil
+  "Template to use for opening dailies. E.g., \"d\" for default.
+(Otherwise, if you have multiple org-roam capture templates,
+you will be asked for each window to interactively choose a template.)"
+  :group 'org-roam-daily-reflection
+  :type 'string)
+
 (defcustom org-roam-daily-reflection-capture-nascent-files t
   "Run org-roam capture functions & hooks (if available) for currently
 non-extant daily journals."
@@ -266,6 +273,7 @@ appropriate configuration."
      
      ((equal unit 'year)
       ;; if it's a leap day, then go back 4 years to prev leap day
+      ;; unless special leap-day functionality is disabled
       (let ((back-by
              (if (and (date-leap-year-p ocd-year)
                       (= ocd-month 02)
@@ -329,7 +337,9 @@ appropriate configuration."
         (org-roam-dailies--capture
          (org-read-date nil t
                         earlier-journal-entry
-                        nil) t)
+                        nil)
+         t
+         org-roam-daily-reflection-capture-keys)
       
       ;; Else, if not using Org-roam, for now just try opening the file, if extant
       ;; and post a message that no entry exists otherwise.
@@ -337,20 +347,15 @@ appropriate configuration."
           (find-file (concat (expand-file-name org-roam-daily-reflection-dailies-directory)
                              "/" earlier-journal-entry ".org"))
 
-        ;; MESSAGE hack:
-        (switch-to-buffer "*Messages*")
-        (let ((inhibit-message t))
-          (message (concat "* No daily journal entry for " earlier-journal-entry ".\n\n")))
+        ;; make an invisible buffer and use pages to display missing entry messages:
+        (switch-to-buffer (generate-new-buffer-name " *Org Roam Daily Reflection Absences*"))
         (goto-char (point-max))
-        
-        ;; NOT WORKING:
-        ;; (pop-to-buffer (make-indirect-buffer (get-buffer-create "*Org Roam Daily Reflection Log*") (generate-new-buffer-name "*indirect*")))
-        ;; (org-mode)
-        ;; (let* ((start (point))
-        ;;        (org-msg (concat "\n\n* No daily journal entry for " earlier-journal-entry ".")))
-        ;;   (insert org-msg)
-        ;;   (narrow-to-region start (point)))
-        ))
+        (let* ((start (point))
+               (org-msg (concat "\n\f\n* No daily journal entry for " earlier-journal-entry ".\n")))
+          (insert org-msg)
+          (narrow-to-page)
+          (visual-line-mode)
+          (goto-char (point-min)))))
 
     ;; Mark non-previously existing daily buffers as unmodified
     ;; (this prevents littering `buffers' with spurious would-be files).
