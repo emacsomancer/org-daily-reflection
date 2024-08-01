@@ -88,6 +88,13 @@ You can also add `decade' and/or `century' to this list if you use these spans."
   :group 'org-roam-daily-reflection
   :type 'sexp)
 
+(defcustom org-roam-daily-reflection-leap-day-is-special t 
+  "If `t', then when the time-span is `year' and the current entry is a leap-day,
+then show the previous `n' leap-days (so with 4-year gaps, rather than 1-year).
+If `nil', then just show 365 days before."
+  :group 'org-roam-daily-reflection
+  :type 'boolean)
+
 (defcustom org-roam-daily-reflection-dailies-directory
   (when (boundp 'org-roam-dailies-directory)
     (file-truename org-roam-dailies-directory))
@@ -275,7 +282,8 @@ appropriate configuration."
       ;; if it's a leap day, then go back 4 years to prev leap day
       ;; unless special leap-day functionality is disabled
       (let ((back-by
-             (if (and (date-leap-year-p ocd-year)
+             (if (and org-roam-daily-reflection-leap-day-is-special
+                      (date-leap-year-p ocd-year)
                       (= ocd-month 02)
                       (= ocd-day 29))
                  (* offset 4)
