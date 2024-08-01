@@ -3,7 +3,7 @@ Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Sh
 
 [[./images/n-year-diary.jpg]]
 
-You can use like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
+You can use Org Roam Daily Reflection like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
 
 [[./images/5-years.png][./images/5-years.png]]
 
@@ -11,13 +11,11 @@ But you could also look at the last three days of daily journals...
 
 [[./images/3-days.png][./images/3-days.png]]
 
-...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, decades, centuries).
+...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, [decades], [centuries]). (E.g., "show me 7 dailies at weekly intervals"; "show me 4 dailies at monthly intervals", &c.)
 
-A general interactive interface can be accessed via the command
-=org-roam-daily-reflect=, which can also be passed a span and range number
-(e.g. "year" and "3", to get dailies comparing this day on the last three years.)
+A general interactive interface can be accessed via the command =org-roam-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-roam-daily-reflect 'year 3)=, to get dailies comparing this day on the last three years.)
 
-A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies).
+A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
 
 ** Details and Customisation
 Org Roam Daily Reflect does not, in fact, actually require the Org-roam package, so it could be used (in theory) with other daily journal systems. It optionally uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. It also tries setting the location it uses for looking up dailies (set in  =org-roam-daily-reflection-dailies-directory=) to the value of =org-roam-dailies-directory=, but this variable can be manually set.
