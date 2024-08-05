@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-roam-daily-reflection
-;; Package-Version: 0.01
-;; Version: 0.01
+;; Package-Version: 0.03
+;; Version: 0.03
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -57,9 +57,8 @@
 ;; None currently. ... 
 
 ;;; Code:
-(eval-when-compile (require 'cl-lib)) ;; for cl-loops
-
-(require 'org)
+(eval-when-compile (require 'cl-lib) ;; for cl-loops
+                   (require 'org)) 
 
 ;; doesn't actually require org-roam,
 ;; although currently it has more functionality if org-roam is enabled
@@ -82,9 +81,10 @@ or 'vertical. 'auto tries to calculate the optimal direction of split."
   :group 'org-roam-daily-reflection
   :type 'symbol)
 
-(defcustom org-roam-daily-reflection-time-spans '("day" "week" "fortnight" "month" "year")
-  "Possible time-spans, including days, weeks, fortnights, months, and years, by default.
-You can also add `decade' and/or `century' to this list if you use these spans."
+(defcustom org-roam-daily-reflection-time-spans '(day week fortnight month year)
+  "Possible time-spans, including days, weeks, fortnights, months, and years,
+by default. You can also add `decade' and/or `century' to this list if you
+use these spans."
   :group 'org-roam-daily-reflection
   :type 'sexp)
 
@@ -115,79 +115,137 @@ non-extant daily journals."
   :group 'org-roam-daily-reflection
   :type 'boolean)
 
-;;; Main function
+;;; interactive wrapper function
 (defun org-roam-daily-reflect (&optional m n)
-  "Show the previous `n' number of `m' time spans of org-roam dailies
+  "Show the prior `n' number of `m' time spans of org-roam dailies
 from the current org-mode daily. choices for `n' are integers and choices
-for `m' are \"day\", \"week\", \"fortnight\", \"month\", \"year\", \"decade\",
-and \"century\"."
+for `m' are `day', `week', `fortnight', `month', `year', `decade',
+and `century'."
   (interactive)
 
   ;; directory check
   (unless org-roam-daily-reflection-dailies-directory
-    (user-error "You need to set `org-roam-daily-reflection-dailies-directory' before running.
-(It seems you likely don't have `org-roam-dailies-directory' set.)"))
+    (user-error "You need to set `org-roam-daily-reflection-dailies-directory'
+before running. (It seems you likely don't have `org-roam-dailies-directory' set.)"))
   
   ;; org-roam-daily-reflect directory/file check
-  (unless (or (org-roam-daily-reflect--daily-note-p) org-roam-daily-reflection-disable-org-roam-daily-check)
+  (unless (or
+           (org-roam-daily-reflect--daily-note-p)
+           org-roam-daily-reflection-disable-org-roam-daily-check)
     (user-error "Not in a daily-note."))
-
-  ;; ;; turn off potential unix time issue flag initially
-  ;; (setq org-roam-daily-reflection--unix-time-issue-maybe nil)
-  
+    
   ;; ask user for `m' and `n' if called interactively
   (let* ((m (or m
                 (when (called-interactively-p 'any)
-                  (intern (message "%s"
-                                   (completing-read "What time interval?"
-                                                    org-roam-daily-reflection-time-spans
-                                                    nil t nil nil))))
+                  (intern
+                   (message "%s"
+                            (completing-read "What time interval?"
+                                             org-roam-daily-reflection-time-spans
+                                             nil t nil nil))))
                 'year))
          (n (or n
                 (when (called-interactively-p 'any)
-                  (string-to-number (message "%s"
-                                             (read-number
-                                              (concat "How many "
-                                                      (symbol-name m) "s? ")))))
+                  (string-to-number
+                   (message "%s"
+                            (read-number
+                             (concat "How many "
+                                     (symbol-name m) "s? ")))))
                 3)))
-    
+    ;; put `m' and `n' into a cons cell and wrap that in a list
+    ;; and call the main function
+    (org-roam-daily-reflection--reflect (list (cons m n)))))
+
+;;; main function (called by interactive version)
+(defun org-roam-daily-reflection--reflect (date-list)
+  "Accepts an alist of time-spans and intervals, e.g., 
+(('day . 3) ('month 4) ('year . 2)), and splits up
+the frame into the appropriate number of windows and
+shows the result in chronological order.
+
+E.g., given the above example input, the function would
+show the 3 days preceding the current journal entry,
+preceded by dailies for 4 months before that, preceded by
+dailies for 2 years before the earliest of the monthly
+dailies."
+  (let (;; count how many windows are needed total
+        (total-splits
+          (cl-loop for (key . value) in date-list
+                   sum value))
+        ;;; Unix time issue flag and escape
+        (org-roam-daily-reflection--unix-time-issue-maybe nil)
+        (org-read-date-force-compatible-dates nil)
+
+        ;; set the initial date point
+        (start-daily
+         (file-name-base buffer-file-name))
+        ;; initialise collected dates
+        (collected-dates nil))
+
     ;; First, create the needed splits (if possible)
-    (org-roam-reflect--determine-splits n)
-    
-    (let (;;; Unix time issue flag
-          (org-roam-daily-reflection--unix-time-issue-maybe nil)
-          (org-read-date-force-compatible-dates nil)
-          (start-daily (file-name-base buffer-file-name)))
-      
-      ;; Then, start from the furthest back `m' (`n' `m's ago) date
-      ;; and successively find+open the journal entry for those dailies:
-      (cl-loop for i from (1- n) downto 1
-               do (let* ((earlier-journal-entry
-                          (org-roam-reflect--determine-prev-journal-entry
-                           (org-read-date nil nil start-daily)
-                           i ;; start with greatest number for furthest back
-                           m)))
+    (org-roam-reflect--determine-splits total-splits)
 
-                    ;; Check for Unix time issue for `earlier-journal-entry'
-                    (let ((internal-emacs-time
-                           (org-time-string-to-time earlier-journal-entry)))
-                      (when
-                          (or
-                           (time-less-p internal-emacs-time (org-time-string-to-time "1970-01-01"))
-                           (time-less-p (org-time-string-to-time "2038-01-01") internal-emacs-time))
-                        (setq org-roam-daily-reflection--unix-time-issue-maybe t)))
+    ;; work through the list of different spans in order
+    (cl-loop for (key . value) in date-list
+             with oldest-seen-daily = nil ;; reset at beginning of loop
+             do (let ((m key)
+                      (n value))
 
-                    ;; Open returned (potential) org-roam daily journal entry:
-                    (org-roam-reflect--open-prev-journal-entry earlier-journal-entry)))
-      
-      ;; Finally, return the point to the top of the first buffer.
-      (goto-char (point-min))
+                  ;; if we're not the first time in the loop
+                  ;; set the new date entry point as the
+                  ;; earliest date we've seen
+                  (when oldest-seen-daily
+                    (setq start-daily oldest-seen-daily))
 
-      ;; Then, post-hoc checking for Unix time issue, and warn user.
-      (when org-roam-daily-reflection--unix-time-issue-maybe
-        (message "Warning: dates before 1970-1-1 or after 2038-1-1 cannot always be represented correctly.
-See docstring for `org-read-date-force-compatible-dates' for more information.")))))
+                  ;; Then, start from the furthest back `m' (`n' `m's ago) date
+                  ;; within each list of time spans, 
+                  ;; and successively find+open the journal entry for those dailies:
+                  (cl-loop for i from n downto 1
+                           with inner-collected-dates = nil 
+                           do (let* ((last-seen-daily
+                                      (org-roam-reflect--determine-prev-journal-entry
+                                       (org-read-date nil nil start-daily)
+                                       i ;; start with greatest number for furthest back
+                                       m)))
 
+                                ;; we're collecting up the list of dates we've calculated
+                                ;; (add-to-list 'inner-collected-dates last-seen-daily t)
+                                (push last-seen-daily inner-collected-dates)
+                                
+                                ;; Check for Unix time issue for `last-seen-daily'
+                                (let ((internal-emacs-time
+                                       (org-time-string-to-time last-seen-daily)))
+                                  (when
+                                      (or
+                                       (time-less-p internal-emacs-time
+                                                    (org-time-string-to-time "1970-01-01"))
+                                       (time-less-p
+                                        (org-time-string-to-time "2038-01-01")
+                                        internal-emacs-time))
+                                    (setq org-roam-daily-reflection--unix-time-issue-maybe t))))
+                           finally
+                           (progn
+                             ;; at the end, set the `oldest-seen-daily' to the
+                             ;; front of the inner collected list
+                             (let ((inner-collected-dates-chronologically
+                                    (nreverse inner-collected-dates)))
+                               (setq oldest-seen-daily (car inner-collected-dates-chronologically))
+                               ;;  and add the list of collected dates to the outer collected dates list
+                               (add-to-list 'collected-dates inner-collected-dates-chronologically))))))
+
+    ;; Open returned (potential) org-roam daily journal entries:
+    (mapc #'org-roam-reflect--open-prev-journal-entry
+          (apply #'append collected-dates))  ;; flatten the list of lists of dates
+        
+    ;; Finally, return the point to the top of the first buffer.
+    (goto-char (point-min))
+
+    ;; and then, do post-hoc checking for Unix time issue, and warn user.
+    (when org-roam-daily-reflection--unix-time-issue-maybe
+      (message "Warning: dates before 1970-1-1 or after 2038-1-1 cannot always
+be represented correctly. See docstring for `org-read-date-force-compatible-dates'
+for more information."))))
+
+;;; note-check
 (defun org-roam-daily-reflect--daily-note-p ()
   "Return t if current-buffer is an org-mode file in
 `org-roam-daily-reflection-dailies-directory' (which is set by default
@@ -205,10 +263,12 @@ to `org-roam-dailies-directory' if available), nil otherwise."
                                                           (expand-file-name a) t t))))
         t nil)))
 
+
 (defun org-roam-reflect--determine-splits (no-of-splits)
   "Split the frame into `no-of-splits' number of windows in the
 appropriate configuration."
-  (let ((split-direction org-roam-daily-reflection-direction-of-window-splits))
+  (let ((split-direction
+         org-roam-daily-reflection-direction-of-window-splits))
     (when (equal split-direction 'auto)
       (let ((width (frame-width))
             (height (frame-height)))
@@ -231,7 +291,8 @@ appropriate configuration."
       (unless ;; restore window configuration and notify user if error in splitting
           (ignore-errors ;; return nil if error
             (delete-other-windows)
-            (cl-loop for i from (1- no-of-splits) downto 1 
+            ;; (cl-loop for i from (1- no-of-splits) downto 1
+            (cl-loop for i from no-of-splits downto 1             
                      do
                      (progn
                        (funcall reflect-split)
@@ -259,7 +320,6 @@ appropriate configuration."
          (ocd-year (nth 5 ocd-date))
          (ocd-month (nth 4 ocd-date))
          (ocd-day (nth 3 ocd-date))
-         (org-new-date nil)
          ;; set locally to allow proper finding of potential entries:
          (org-read-date-force-compatible-dates nil))
     
@@ -352,25 +412,25 @@ appropriate configuration."
       ;; Else, if not using Org-roam, for now just try opening the file, if extant
       ;; and post a message that no entry exists otherwise.
       (if (org-roam-reflect--prev-node-extant-file earlier-journal-entry)
-          (find-file (concat (expand-file-name org-roam-daily-reflection-dailies-directory)
-                             "/" earlier-journal-entry ".org"))
+          (find-file (concat
+                      (expand-file-name org-roam-daily-reflection-dailies-directory)
+                      "/" earlier-journal-entry ".org"))
 
         ;; make an invisible buffer and use pages to display missing entry messages:
-        (switch-to-buffer (generate-new-buffer-name " *Org Roam Daily Reflection Absences*"))
+        (switch-to-buffer
+         (generate-new-buffer-name " *Org Roam Daily Reflection Absences*"))
         (goto-char (point-max))
-        (let* ((start (point))
-               (org-msg (concat "\n\f\n* No daily journal entry for " earlier-journal-entry ".\n")))
-          (insert org-msg)
-          (narrow-to-page)
-          (visual-line-mode)
-          (goto-char (point-min)))))
+        (insert (concat "\n\f\n* No daily journal entry for " earlier-journal-entry ".\n"))
+        (narrow-to-page)
+        (visual-line-mode)
+        (goto-char (point-min))))
 
     ;; Mark non-previously existing daily buffers as unmodified
     ;; (this prevents littering `buffers' with spurious would-be files).
     (unless (org-roam-reflect--prev-node-extant-file earlier-journal-entry)
       (set-buffer-modified-p nil)))
-  
-  ;; move the window focus/active point to the next window (right or down).
+
+  ;; move the window focus to the next window (right or down).
   (other-window 1))
 
 ;;; various predefined reflection commands
@@ -378,32 +438,32 @@ appropriate configuration."
   "Compare the daily for the current day to the same day on the
 previous two years."
   (interactive)
-  (org-roam-daily-reflect 'year 3))
+  (org-roam-daily-reflect 'year 2))
 
 (defun org-roam-reflect-on-last-three-months ()
   "Compare the daily for the last three months."
   (interactive)
-  (org-roam-daily-reflect 'month 3))
+  (org-roam-daily-reflect 'month 2))
 
 (defun org-roam-reflect-on-last-two-fortnights ()
   "Compare the daily for today and the preceding fortnight."
   (interactive)
-  (org-roam-daily-reflect 'fortnight 2))
+  (org-roam-daily-reflect 'fortnight 1))
 
 (defun org-roam-reflect-on-last-four-weeks ()
   "Compare the daily for the last four weeks."
   (interactive)
-  (org-roam-daily-reflect 'week 4))
+  (org-roam-daily-reflect 'week 3))
 
 (defun org-roam-reflect-on-last-five-decades ()
   "Compare the daily for the last half century."
   (interactive)
-  (org-roam-daily-reflect 'decade 5))
+  (org-roam-daily-reflect 'decade 4))
 
 (defun org-roam-reflect-on-last-five-days ()
   "Compare the daily for the last five days."
   (interactive)
-  (org-roam-daily-reflect 'day 5))
+  (org-roam-daily-reflect 'day 4))
 
 (provide 'org-roam-daily-reflection)
 

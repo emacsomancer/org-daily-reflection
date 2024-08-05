@@ -13,9 +13,13 @@ But you could also look at the last three days of daily journals...
 
 ...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, [decades], [centuries]). (E.g., "show me 7 dailies at weekly intervals"; "show me 4 dailies at monthly intervals", &c.)
 
-A general interactive interface can be accessed via the command =org-roam-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-roam-daily-reflect 'year 3)=, to get dailies comparing this day on the last three years.)
+A general interactive interface can be accessed via the command =org-roam-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-roam-daily-reflect 'year 3)=, to get dailies comparing this day on the preceding three years.)
 
-A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the last five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
+A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
+
+** Version 0.03 *breaking changes*
+- The interactive =org-roam-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]
+- The interactive =org-roam-daily-reflect= command is now a wrapper round the main =org-roam-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
 
 ** Details and Customisation
 Org Roam Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] and probably with [[https://protesilaos.com/emacs/denote][Denote]]).
