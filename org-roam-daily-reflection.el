@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-roam-daily-reflection
-;; Package-Version: 0.031
-;; Version: 0.031
+;; Package-Version: 0.033
+;; Version: 0.033
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -287,7 +287,7 @@ appropriate configuration."
                            #'split-window-below)))
       
       ;; first, save current window config
-      (window-configuration-to-register 'org-roam-daily-reflect)
+      (window-configuration-to-register 'org-roam-daily-reflect--old)
       
       (unless ;; restore window configuration and notify user if error in splitting
           (ignore-errors ;; return nil if error
@@ -299,8 +299,8 @@ appropriate configuration."
                        (funcall reflect-split)
                        (balance-windows)))
             t) ;; if successful
-        (jump-to-register 'org-roam-daily-reflect) ;; restore old window config,
-        ;; if split failed
+        (jump-to-register                ;; restore old window config,
+         'org-roam-daily-reflect--old)   ;; if split failed
         (error (concat "Frame too small to show "
                        (number-to-string no-of-splits)
                        " windows."))))))
@@ -434,8 +434,28 @@ appropriate configuration."
   ;; move the window focus to the next window (right or down).
   (other-window 1))
 
-;;; various predefined reflection commands
+;;; restore window layout
+;;;###autoload
+(defun org-roam-daily-reflection-layout-toggle ()
+  "Either restore the window layout present before user reflected on
+daily journals, or switch back to the last org-roam-daily-reflection
+window layout."
+  (interactive)
+  (if (get-register 'org-roam-daily-reflect--old)
+      (progn
+        (window-configuration-to-register
+         'org-roam-daily-reflect--mirrors)
+        (jump-to-register 'org-roam-daily-reflect--old)
+        (set-register 'org-roam-daily-reflect--old nil))
+    (if (get-register 'org-roam-daily-reflect--mirrors)
+        (progn
+          (window-configuration-to-register
+           'org-roam-daily-reflect--old)
+          (jump-to-register 'org-roam-daily-reflect--mirrors)
+          (set-register 'org-roam-daily-reflect--mirrors nil))
+      (user-error "Something went wrong."))))
 
+;;; various predefined reflection commands
 ;;;###autoload
 (defun org-roam-reflect-on-last-three-years ()
   "Compare the daily for the current day to the same day on the

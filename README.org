@@ -17,6 +17,8 @@ A general interactive interface can be accessed via the command =org-roam-daily-
 
 A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
 
+** Version 0.033 additional functionality
+- add =org-roam-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
 ** Version 0.031 *breaking changes*
 - restored old interactive behaviour of =org-roam-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
 ** Version 0.03 *breaking changes*
