@@ -17,8 +17,11 @@ A general interactive interface can be accessed via the command =org-roam-daily-
 
 A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
 
+** Version 0.031 *breaking changes*
+- restored old interactive behaviour of =org-roam-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
 ** Version 0.03 *breaking changes*
-- The interactive =org-roam-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]
+- +The interactive =org-roam-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]+
+- The non-interactive =org-roam-daily-reflection--reflect= function now produces the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. (You can still use the interactive command =org-roam-daily-reflect= non-interactively [in elisp] in the old fashion (just only with a single span, of course).)
 - The interactive =org-roam-daily-reflect= command is now a wrapper round the main =org-roam-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
 
 ** Details and Customisation

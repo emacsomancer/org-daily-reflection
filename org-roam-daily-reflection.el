@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-roam-daily-reflection
-;; Package-Version: 0.03
-;; Version: 0.03
+;; Package-Version: 0.031
+;; Version: 0.031
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -116,11 +116,11 @@ non-extant daily journals."
   :type 'boolean)
 
 ;;; interactive wrapper function
+;;;###autoload
 (defun org-roam-daily-reflect (&optional m n)
-  "Show the prior `n' number of `m' time spans of org-roam dailies
-from the current org-mode daily. choices for `n' are integers and choices
-for `m' are `day', `week', `fortnight', `month', `year', `decade',
-and `century'."
+  "Show `n' number of `m' time spans of org-roam dailies from the current
+org-mode daily. choices for `n' are integers and choices for `m' are `day',
+`week', `fortnight', `month', `year', `decade', and `century'."
   (interactive)
 
   ;; directory check
@@ -145,11 +145,12 @@ before running. (It seems you likely don't have `org-roam-dailies-directory' set
                 'year))
          (n (or n
                 (when (called-interactively-p 'any)
-                  (string-to-number
-                   (message "%s"
-                            (read-number
-                             (concat "How many "
-                                     (symbol-name m) "s? ")))))
+                  (1- ;; restore old interactive behaviour, as maybe more intuitive
+                   (string-to-number
+                    (message "%s"
+                             (read-number
+                              (concat "How many "
+                                      (symbol-name m) "s? "))))))
                 3)))
     ;; put `m' and `n' into a cons cell and wrap that in a list
     ;; and call the main function
@@ -434,36 +435,43 @@ appropriate configuration."
   (other-window 1))
 
 ;;; various predefined reflection commands
+
+;;;###autoload
 (defun org-roam-reflect-on-last-three-years ()
   "Compare the daily for the current day to the same day on the
 previous two years."
   (interactive)
-  (org-roam-daily-reflect 'year 2))
+  (org-roam-daily-reflect 'year 3))
 
+;;;###autoload
 (defun org-roam-reflect-on-last-three-months ()
   "Compare the daily for the last three months."
   (interactive)
-  (org-roam-daily-reflect 'month 2))
+  (org-roam-daily-reflect 'month 3))
 
+;;;###autoload
 (defun org-roam-reflect-on-last-two-fortnights ()
   "Compare the daily for today and the preceding fortnight."
   (interactive)
-  (org-roam-daily-reflect 'fortnight 1))
+  (org-roam-daily-reflect 'fortnight 2))
 
+;;;###autoload
 (defun org-roam-reflect-on-last-four-weeks ()
   "Compare the daily for the last four weeks."
   (interactive)
-  (org-roam-daily-reflect 'week 3))
+  (org-roam-daily-reflect 'week 4))
 
+;;;###autoload
 (defun org-roam-reflect-on-last-five-decades ()
   "Compare the daily for the last half century."
   (interactive)
-  (org-roam-daily-reflect 'decade 4))
+  (org-roam-daily-reflect 'decade 5))
 
+;;;###autoload
 (defun org-roam-reflect-on-last-five-days ()
   "Compare the daily for the last five days."
   (interactive)
-  (org-roam-daily-reflect 'day 4))
+  (org-roam-daily-reflect 'day 5))
 
 (provide 'org-roam-daily-reflection)
 
