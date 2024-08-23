@@ -27,7 +27,7 @@ A few sample one-shot functions with prefix =org-reflect-on-last-= are included 
 - The interactive =org-daily-reflect= command is now a wrapper round the main =org-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
 
 ** Details and Customisation
-Org Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] (which I use) and probably with [[https://protesilaos.com/emacs/denote][Denote]]). Currently it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.)
+Org Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] (which I use) and probably with [[https://protesilaos.com/emacs/denote][Denote]]). Currently it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.) See below, esp. the "TODO" notes for more information.
 
 This package /optionally/ uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. And even some users who do have Org Roam installed may prefer to turn off =org-daily-reflection-capture-nascent-files= (which will disable the call to =org-roam-dailies--capture=) in order to not create new potential journal entries for missing dates (though when =org-dailies--capture= is utilised, any non-previously existing journal entries are marked as "unmodified" so they will not trigger any "unsaved file" warnings). (When =org-daily-reflection-capture-nascent-files= is set to =nil=, or =org-roam-dailies--capture= is unavailable, it will instead just insert "missing journal entry" notes in the appropriate window.)
 
@@ -69,6 +69,14 @@ or [[https://github.com/radian-software/straight.el][straight]]:
 #+end_src
 
 ** TODO
+*** Filename customisation
+In its present state, Org Daily Reflection it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.), so the filename format is currently hard-coded, but future revisions may allow for other formats (though the filename would somehow).
+
+One addition question here is possibly handling "supra-dailies", i.e., the case where a user has multiple separate files for a single day (maybe representing hour-minute-second timestamps). Handling examining filenames with additional information is not itself an issue here, but it is not clear what should be shown in the split windows in this case. Potentially windows could be split both vertically and horizontally, and one of the splits could contain all (or as many as will fit?) of the sub-day divisions. (I'm not currently planning on tackling this as I don't know of people with this approach, but if there are, it would be an interesting problem to ponder.) 
+
+
+
+
 - add code to handle a single-file [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetree]]
 - maybe try to test with Denote and other non-Org-roam but Org-related Emacs note-taking setups
 
