@@ -74,11 +74,11 @@ In its present state, Org Daily Reflection it relies on being told a directory w
 
 One addition question here is possibly handling "supra-dailies", i.e., the case where a user has multiple separate files for a single day (maybe representing hour-minute-second timestamps). Handling examining filenames with additional information is not itself an issue here, but it is not clear what should be shown in the split windows in this case. Potentially windows could be split both vertically and horizontally, and one of the splits could contain all (or as many as will fit?) of the sub-day divisions. (I'm not currently planning on tackling this as I don't know of people with this approach, but if there are, it would be an interesting problem to ponder.) 
 
+*** Single-file datetrees
+Since this is not necessarily tied to Org-roam, it could also handle other daily journal type setups, including single-file note [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetrees]]. [[https://www.reddit.com/r/emacs/comments/1einc51/org_roam_daily_reflection_a_new_package_for/lgdj7vt/][Apparently one user]] has managed to modify it accordingly, but I would like to include this as built-in package functionality
 
-
-
-- add code to handle a single-file [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetree]]
-- maybe try to test with Denote and other non-Org-roam but Org-related Emacs note-taking setups
+*** Compatibility with other Org(ish) setups
+I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups?) I am current user of Org-node, which itself is currently compatible with Org-roam.
 
 ** Notes
 Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
