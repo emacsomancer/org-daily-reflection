@@ -68,5 +68,9 @@ or [[https://github.com/radian-software/straight.el][straight]]:
   :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
 
+** TODO
+- add code to handle a single-file [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetree]]
+- maybe try to test with Denote and other non-Org-roam but Org-related Emacs note-taking setups
+
 ** Notes
 Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
