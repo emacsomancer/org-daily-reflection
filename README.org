@@ -84,3 +84,4 @@ I am current user of Org Node, which itself is currently compatible with Org-roa
 
 ** Notes
 Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
+ 
