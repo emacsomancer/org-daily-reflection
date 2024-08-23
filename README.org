@@ -77,8 +77,10 @@ One addition question here is possibly handling "supra-dailies", i.e., the case 
 *** Single-file datetrees
 Since this is not necessarily tied to Org-roam, it could also handle other daily journal type setups, including single-file note [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetrees]]. [[https://www.reddit.com/r/emacs/comments/1einc51/org_roam_daily_reflection_a_new_package_for/lgdj7vt/][Apparently one user]] has managed to modify it accordingly, but I would like to include this as built-in package functionality
 
-*** Compatibility with other Org(ish) setups
-I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups?) I am current user of Org-node, which itself is currently compatible with Org-roam.
+*** Compatibility with other Org(ish) setups (Denote, Org-Node)
+I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups?)
+
+I am current user of Org-node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org-node, and also to add additional optional feature to take advantage of .
 
 ** Notes
 Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
