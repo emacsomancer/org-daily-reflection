@@ -1,9 +1,9 @@
-* Org Roam Daily Reflection
-Reflect on your [[https://www.orgroam.com/][org-roam]] daily journal entries. Shows a range of split windows, each with an org-roam daily in them, at specified intervals. 
+* Org Daily Reflection
+Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]]). Shows a range of split windows, each with an org-roam daily in them, at specified intervals. 
 
 [[./images/n-year-diary.jpg]]
 
-You can use Org Roam Daily Reflection like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
+You can use Org Daily Reflection like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
 
 [[./images/5-years.png][./images/5-years.png]]
 
@@ -13,27 +13,27 @@ But you could also look at the last three days of daily journals...
 
 ...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, [decades], [centuries]). (E.g., "show me 7 dailies at weekly intervals"; "show me 4 dailies at monthly intervals", &c.)
 
-A general interactive interface can be accessed via the command =org-roam-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-roam-daily-reflect 'year 3)=, to get dailies comparing this day on the preceding three years.)
+A general interactive interface can be accessed via the command =org-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-daily-reflect 'year 3)=, to get dailies comparing this day on the preceding three years.)
 
-A few sample one-shot functions with prefix =org-roam-reflect-on-last-= are included as well (e.g. =org-roam-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
+A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
 
 ** Version 0.033 additional functionality
-- add =org-roam-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
+- add =org-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
 ** Version 0.031 *breaking changes*
-- restored old interactive behaviour of =org-roam-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
+- restored old interactive behaviour of =org-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
 ** Version 0.03 *breaking changes*
-- +The interactive =org-roam-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]+
-- The non-interactive =org-roam-daily-reflection--reflect= function now produces the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. (You can still use the interactive command =org-roam-daily-reflect= non-interactively [in elisp] in the old fashion (just only with a single span, of course).)
-- The interactive =org-roam-daily-reflect= command is now a wrapper round the main =org-roam-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
+- +The interactive =org-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]+
+- The non-interactive =org-daily-reflection--reflect= function now produces the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. (You can still use the interactive command =org-daily-reflect= non-interactively [in elisp] in the old fashion (just only with a single span, of course).)
+- The interactive =org-daily-reflect= command is now a wrapper round the main =org-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
 
 ** Details and Customisation
-Org Roam Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] and probably with [[https://protesilaos.com/emacs/denote][Denote]]).
+Org Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] and probably with [[https://protesilaos.com/emacs/denote][Denote]]).
 
-This package /optionally/ uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. And even some users who do have Org Roam installed may prefer to turn off =org-roam-daily-reflection-capture-nascent-files= (which will disable the call to =org-roam-dailies--capture=) in order to not create new potential journal entries for missing dates (though when =org-roam-dailies--capture= is utilised, any non-previously existing journal entries are marked as "unmodified" so they will not trigger any "unsaved file" warnings). (When =org-roam-daily-reflection-capture-nascent-files= is set to =nil=, or =org-roam-dailies--capture= is unavailable, it will instead just insert "missing journal entry" notes in the appropriate window.)
+This package /optionally/ uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. And even some users who do have Org Roam installed may prefer to turn off =org-daily-reflection-capture-nascent-files= (which will disable the call to =org-roam-dailies--capture=) in order to not create new potential journal entries for missing dates (though when =org-dailies--capture= is utilised, any non-previously existing journal entries are marked as "unmodified" so they will not trigger any "unsaved file" warnings). (When =org-daily-reflection-capture-nascent-files= is set to =nil=, or =org-roam-dailies--capture= is unavailable, it will instead just insert "missing journal entry" notes in the appropriate window.)
 
-It also tries setting the location it uses for looking up dailies (set in  =org-roam-daily-reflection-dailies-directory=) to the value of =org-roam-dailies-directory=, but this variable can be manually set.
+It also tries setting the location it uses for looking up dailies (set in  =org-daily-reflection-dailies-directory=) to the value of =org-roam-dailies-directory=, but this variable can be manually set.
 
-One issue (in its current beta state) is that it assumes that the journal entries are all in the directory specified in =org-roam-daily-reflection-dailies-directory= and are named =<YYYY-MM-DD>.org= (e.g., =2024-08-01.org=). Though, since this is really its main requirement (it doesn't need org-ids &c.), it should be fairly flexible/portable. Being able to customise the expected file naming is a planned feature, although there are limitations in the current form as it relies on the file-name somehow denoting day, month, and year.
+One issue (in its current beta state) is that it assumes that the journal entries are all in the directory specified in =org-daily-reflection-dailies-directory= and are named =<YYYY-MM-DD>.org= (e.g., =2024-08-01.org=). Though, since this is really its main requirement (it doesn't need org-ids &c.), it should be fairly flexible/portable. Being able to customise the expected file naming is a planned feature, although there are limitations in the current form as it relies on the file-name somehow denoting day, month, and year.
 
 Check =customize= for various other options, including direction of window splits, whether leap days have special behaviour, whether or not the capture template is used to create potential (but marked unmodified) journal entries for dates without current journal entries (this only works if org-roam is available and can be disabled in any case), and (if org-roam capture templates are used) if a capture key is passed to the =org-roam-dailies--capture= function.
 
@@ -46,26 +46,26 @@ Not yet on MELPA or similar.
 
 You can manually clone/download and =require=, or install with an alternative/enhanced package manager, like [[https://github.com/progfolio/elpaca][elpaca]]:
 #+begin_src elisp
-(use-package org-roam-daily-reflection
-  :ensure (:host github :repo "emacsomancer/org-roam-daily-reflection"))
+(use-package org-daily-reflection
+  :ensure (:host github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
 
 or [[https://github.com/slotThe/vc-use-package][vc-use-package]] (probably the lightest-weight option):
 #+begin_src elisp
-(use-package org-roam-daily-reflection
-  :vc (:fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
+(use-package org-daily-reflection
+  :vc (:fetcher github :repo "emacsomancer/org-daily-reflection"))
   #+end_src
 
 or [[https://github.com/quelpa/quelpa][quelpa]]:
 #+begin_src elisp
-(use-package org-roam-daily-reflection
-  :quelpa (org-roam-daily-reflection :fetcher github :repo "emacsomancer/org-roam-daily-reflection"))
+(use-package org-daily-reflection
+  :quelpa (org-daily-reflection :fetcher github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
   
 or [[https://github.com/radian-software/straight.el][straight]]:
 #+begin_src elisp
-(use-package org-roam-daily-reflection
-  :straight (org-roam-daily-reflection :type git :host github :repo "emacsomancer/org-roam-daily-reflection"))
+(use-package org-daily-reflection
+  :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
 
 ** Notes
