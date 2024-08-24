@@ -80,7 +80,7 @@ Since this is not necessarily tied to Org-roam, it could also handle other daily
 *** Compatibility with other Org(ish) setups (Denote, Org-Node)
 I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups?)
 
-I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and also to add additional optional feature to take advantage of Org Node features, such as .
+I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and also to add additional optional feature to take advantage of Org Node features, such as specifying a series to query rather than looking at a directory. This should be faster on devices with potential high cost to filesystem access (not pointing fingers, but Android) and also allow for reflection on other types of series.
 
 ** Notes
 Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
