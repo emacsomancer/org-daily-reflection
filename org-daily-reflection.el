@@ -68,7 +68,7 @@
   "Compare N dailies at M intervals."
   :group 'org)
 
-(defcustom org-daily-reflection-disable-org-daily-check nil
+(defcustom org-daily-reflection-disable-org-roam-daily-check nil
   "Whether or not to check for current buffer actually being an org-roam
 daily or not. (Potentially useful in symlinked or other non-standard
 file-system cases.)"
@@ -97,7 +97,7 @@ If `nil', then just show 365 days before."
 
 (defcustom org-daily-reflection-dailies-directory
   (when (boundp 'org-roam-dailies-directory)
-    (file-truename org-roam-dailies-directory))
+    (expand-file-name org-roam-dailies-directory org-roam-directory))
   "Path to daily-notes."
   :group 'org-daily-reflection
   :type 'string)
@@ -131,7 +131,7 @@ before running. (It seems you likely don't have `org-roam-dailies-directory' set
   ;; org-daily-reflect directory/file check
   (unless (or
            (org-daily-reflect--daily-note-p)
-           org-daily-reflection-disable-org-daily-check)
+           org-daily-reflection-disable-org-roam-daily-check)
     (user-error "Not in a daily-note."))
     
   ;; ask user for `m' and `n' if called interactively
