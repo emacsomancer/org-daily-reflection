@@ -461,13 +461,13 @@ window layout."
   "Compare the daily for the current day to the same day on the
 previous two years."
   (interactive)
-  (org-daily-reflection 'year 3))
+  (org-daily-reflection 'year 2))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-three-months ()
   "Compare the daily for the last three months."
   (interactive)
-  (org-daily-reflection 'month 3))
+  (org-daily-reflection 'month 2))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-two-fortnights ()
