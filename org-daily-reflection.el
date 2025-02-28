@@ -416,7 +416,8 @@ appropriate configuration."
          (org-read-date-force-compatible-dates nil)
          ;; record if such a daily exists on the file-system already, and its location if so
          (daily-existing-file-location (org-daily-reflection--prev-node-extant-file earlier-journal-entry))
-         (target-daily-open-already (get-file-buffer daily-existing-file-location)))
+         (target-daily-open-already (when daily-existing-file-location 
+                                      (get-file-buffer daily-existing-file-location))))
 
     ;; If it is available, then run `org-roam-dailies--capture'
     ;; with non-nil GOTO optional arg (this seems the best way
