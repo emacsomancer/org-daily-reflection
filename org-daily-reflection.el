@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
-;; Package-Version: 0.033
-;; Version: 0.033
+;; Package-Version: 0.0333
+;; Version: 0.0333
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -231,7 +231,8 @@ dailies."
                                     (nreverse inner-collected-dates)))
                                (setq oldest-seen-daily (car inner-collected-dates-chronologically))
                                ;;  and add the list of collected dates to the outer collected dates list
-                               (add-to-list 'collected-dates inner-collected-dates-chronologically))))))
+                               ;; (add-to-list 'collected-dates inner-collected-dates-chronologically)
+                               (cl-pushnew inner-collected-dates-chronologically collected-dates))))))
 
     ;; Open returned (potential) daily journal entries:
     (mapc #'org-daily-reflection--open-prev-journal-entry
@@ -286,7 +287,8 @@ appropriate configuration."
                              #'split-window-right
                            #'split-window-below)))
       
-      ;; first, save current window config
+      ;; first, save current window config for both
+      ;; restore-if-fail and user restore
       (window-configuration-to-register 'org-daily-reflect--old)
       
       (unless ;; restore window configuration and notify user if error in splitting
@@ -304,6 +306,12 @@ appropriate configuration."
         (error (concat "Frame too small to show "
                        (number-to-string no-of-splits)
                        " windows."))))))
+
+;;;###autoload
+(defun org-daily-reflection-restore-prior-windows ()
+  "Restore the pre-reflection window configuration."
+  (interactive)
+  (jump-to-register 'org-daily-reflect--old))
 
 (defun org-daily-reflection--prev-node-extant-file (org-date)
   "Determines whether a daily already exists for
