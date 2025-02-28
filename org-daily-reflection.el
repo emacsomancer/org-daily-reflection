@@ -115,6 +115,14 @@ non-extant daily journals."
   :group 'org-daily-reflection
   :type 'boolean)
 
+(defcustom org-daily-reflection-close-unmodified-newly-opened-buffers nil
+  "When restoring previous layouts (see function `org-daily-reflection-restore-prior-windows'),
+non-nil settings will also result in closing any daily buffers that
+org-daily-reflection opened itself, unless they're been modified.
+(Daily buffers you had open already are unaffected.)"
+  :group 'org-daily-reflection
+  :type 'boolean)
+
 ;;; interactive wrapper function
 ;;;###autoload
 (defun org-daily-reflection (&optional m n)
@@ -311,6 +319,8 @@ appropriate configuration."
 (defun org-daily-reflection-restore-prior-windows ()
   "Restore the pre-reflection window configuration."
   (interactive)
+  (when org-daily-reflection-close-unmodified-newly-opened-buffers
+    (org-daily-reflection-close-reflection-newly-opened))
   (jump-to-register 'org-daily-reflect--old))
 
 (defun org-daily-reflection--prev-node-extant-file (org-date)
@@ -396,20 +406,26 @@ appropriate configuration."
                        nil (org-time-string-to-time org-curr-date))))
      (t (user-error "Unrecognised unit.")))))
 
+(setq org-daily-reflection--list-of-newly-opened-entries nil)
+
 (defun org-daily-reflection--open-prev-journal-entry (earlier-journal-entry)
   "Open the appropriate daily journal that is `offset' number of 
 `units' before `org-curr-date'."
 
-  (let (;; set locally to allow proper opening of potential entries:
-        (org-read-date-force-compatible-dates nil))
+  (let* (;; set locally to allow proper opening of potential entries:
+         (org-read-date-force-compatible-dates nil)
+         ;; record if such a daily exists on the file-system already, and its location if so
+         (daily-existing-file-location (org-daily-reflection--prev-node-extant-file earlier-journal-entry))
+         (target-daily-open-already (get-file-buffer daily-existing-file-location)))
 
     ;; If it is available, then run `org-roam-dailies--capture'
     ;; with non-nil GOTO optional arg (this seems the best way
     ;; to open both existing and nascent org-roam files)
     ;; and go to the note without creating an entry;
     ;; this creates a daily-note for TIME (first arg) if necessary.
+             
     (if (and (fboundp 'org-roam-dailies--capture)
-             org-daily-reflection-capture-nascent-files)
+             org-daily-reflection-capture-nascent-files)       
         ;; run org-daily capture function
         (org-roam-dailies--capture
          (org-read-date nil t
@@ -437,12 +453,33 @@ appropriate configuration."
     ;; Mark non-previously existing daily buffers as unmodified
     ;; (this prevents littering `buffers' with spurious would-be files).
     (unless (org-daily-reflection--prev-node-extant-file earlier-journal-entry)
-      (set-buffer-modified-p nil)))
+      (set-buffer-modified-p nil)
+      (unless target-daily-open-already
+      (setq org-daily-reflection--list-of-newly-opened-entries
+            (cons (current-buffer) org-daily-reflection--list-of-newly-opened-entries)))))
 
-  ;; move the window focus to the next window (right or down).
-  (other-window 1))
+    ;; move the window focus to the next window (right or down).
+    (other-window 1))
 
 ;;; restore window layout
+(defun org-daily-reflection-close-reflection-newly-opened ()
+  "Called by `org-daily-reflection-layout-toggle' when
+variable `org-daily-reflection-close-unmodified-newly-opened-bufffers'
+is non-nil. Can also be used interactively."
+  (interactive)
+  (cl-labels ((remove-from-newly-opened-list (buf)
+                (setq org-daily-reflection--list-of-newly-opened-entries
+                      (remove buf org-daily-reflection--list-of-newly-opened-entries))))
+    (dolist (buf org-daily-reflection--list-of-newly-opened-entries)
+      (unless (buffer-live-p buf)
+        (remove-from-newly-opne)
+           (and
+            (buffer-live-p buf)
+            (not (buffer-modified-p buf)))
+         (kill-buffer buf)
+  ))))
+
+
 ;;;###autoload
 (defun org-daily-reflection-layout-toggle ()
   "Either restore the window layout present before user reflected on
