@@ -13,7 +13,7 @@ But you could also look at the last three days of daily journals...
 
 ...or dailies at other specified intervals (e.g. days, weeks, fortnights, months, years, [decades], [centuries]). (E.g., "show me 7 dailies at weekly intervals"; "show me 4 dailies at monthly intervals", &c.)
 
-A general interactive interface can be accessed via the command =org-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-daily-reflect 'year 3)=, to get dailies comparing this day on the preceding three years.)
+A general interactive interface can be accessed via the command =org-daily-reflection=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-daily-reflection 'year 3)=, to get dailies comparing this day on the preceding three years.)
 
 A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of daily entries). The user can create new functions or commands using these models for their desired reflections.
 
@@ -22,11 +22,11 @@ A few sample one-shot functions with prefix =org-reflect-on-last-= are included 
 ** Version 0.033 additional functionality
 - added =org-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
 ** Version 0.031 *breaking changes*
-- restored old interactive behaviour of =org-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
+- restored old interactive behaviour of =org-daily-reflection=, to show /n/ number (total) of dailies at /m/ intervals. 
 ** Version 0.03 *breaking changes*
-- +The interactive =org-daily-reflect= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]+
-- The non-interactive =org-daily-reflection--reflect= function now produces the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. (You can still use the interactive command =org-daily-reflect= non-interactively [in elisp] in the old fashion (just only with a single span, of course).)
-- The interactive =org-daily-reflect= command is now a wrapper round the main =org-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
+- +The interactive =org-daily-reflection= command now shows the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. [ *breaking-change* ]+
+- The non-interactive =org-daily-reflection--reflect= function now produces the *preceding* /n/ number of dailies, rather than showing a total of /n/ dailies. (You can still use the interactive command =org-daily-reflection= non-interactively [in elisp] in the old fashion (just only with a single span, of course).)
+- The interactive =org-daily-reflection= command is now a wrapper round the main =org-daily-reflection--reflect= function. This function accepts an alist of dotted pairs of the form "(time-span interval)", e.g., =(('day . 3) ('month 4) ('year . 2))= (which would show the 3 days preceding the current journal entry, preceded by dailies for 4 months before that, preceded by dailies for 2 years before the earliest of the monthly dailies). Thus you can create complex arrangements of dailies to reflect on. [ *breaking-change* ]
 
 ** Details and Customisation
 Org Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] (which I use) and probably with [[https://protesilaos.com/emacs/denote][Denote]]). Currently it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.) See below, esp. the "TODO" notes for more information.
