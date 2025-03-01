@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
-;; Package-Version: 0.0333
-;; Version: 0.0333
+;; Package-Version: 0.03334
+;; Version: 0.03334
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -315,14 +315,6 @@ appropriate configuration."
                        (number-to-string no-of-splits)
                        " windows."))))))
 
-;;;###autoload
-(defun org-daily-reflection-restore-prior-windows ()
-  "Restore the pre-reflection window configuration."
-  (interactive)
-  (when org-daily-reflection-close-unmodified-newly-opened-buffers
-    (org-daily-reflection-close-reflection-newly-opened))
-  (jump-to-register 'org-daily-reflect--old))
-
 (defun org-daily-reflection--prev-node-extant-file (org-date)
   "Determines whether a daily already exists for
 `org-date' date; return its path if it does."
@@ -463,6 +455,7 @@ appropriate configuration."
     (other-window 1))
 
 ;;; restore window layout
+;;;###autoload
 (defun org-daily-reflection-close-reflection-newly-opened ()
   "Called by `org-daily-reflection-layout-toggle' when
 variable `org-daily-reflection-close-unmodified-newly-opened-bufffers'
@@ -480,6 +473,13 @@ is non-nil. Can also be used interactively."
          (kill-buffer buf)
   ))))
 
+;;;###autoload
+(defun org-daily-reflection-restore-prior-windows ()
+  "Restore the pre-reflection window configuration."
+  (interactive)
+  (when org-daily-reflection-close-unmodified-newly-opened-buffers
+    (org-daily-reflection-close-reflection-newly-opened))
+  (jump-to-register 'org-daily-reflect--old))
 
 ;;;###autoload
 (defun org-daily-reflection-layout-toggle ()

@@ -17,8 +17,10 @@ A general interactive interface can be accessed via the command =org-daily-refle
 
 A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
 
+** Version 0.03334 additional functionality
+- added =org-daily-reflection-restore-prior-windows= function which restores the pre-reflection window configuration. (Different from =org-daily-reflection-layout-toggle=, which is intended for toggling back and forth.) Also a user-configurable setting, ~org-daily-reflection-close-unmodified-newly-opened-buffers~ (defaulting to ~nil~) for whether dailies that were not previously open (and have not been modified) that were opened by Org Daily Reflection should be closed when calling =org-daily-reflection-restore-prior-windows=. Windows opened by Org Daily Reflection can be ordered to close regardless of the setting via the interactive command =org-daily-reflection-close-reflection-newly-opened=.
 ** Version 0.033 additional functionality
-- add =org-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
+- added =org-daily-reflection-layout-toggle= command, which restores the window layout, pre-reflection; and can be used thereafter as a toggle between the pre-reflection and reflection window layouts.
 ** Version 0.031 *breaking changes*
 - restored old interactive behaviour of =org-daily-reflect=, to show /n/ number (total) of dailies at /m/ intervals. 
 ** Version 0.03 *breaking changes*
