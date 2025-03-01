@@ -136,7 +136,7 @@ opened itself, unless they have been modified.
 (defcustom org-daily-reflection-force-window-operations nil
   "When set allow `org-daily-reflection' to force window operations.
 E.g., for `delete-other-windows'."
-  :group 'org-daily-reflectoin
+  :group 'org-daily-reflection
   :type 'boolean)
 
 ;;; interactive wrapper function
@@ -258,8 +258,11 @@ dailies."
                                     (nreverse inner-collected-dates)))
                                (setq oldest-seen-daily (car inner-collected-dates-chronologically))
                                ;;  and add the list of collected dates to the outer collected dates list
+                               (cl-pushnew inner-collected-dates-chronologically collected-dates)
+                               ;; (changed to above from
                                ;; (add-to-list 'collected-dates inner-collected-dates-chronologically)
-                               (cl-pushnew inner-collected-dates-chronologically collected-dates))))))
+                               ;; because "Error: ‘add-to-list’ can’t use lexical var ‘collected-dates’; use ‘push’ or ‘cl-pushnew’")
+                               )))))
 
     ;; Open returned (potential) daily journal entries:
     (mapc #'org-daily-reflection--open-prev-journal-entry
@@ -288,12 +291,12 @@ Return \='t if `current-buffer' is an `org-mode' file in
     (setq a (expand-file-name a))
     (if (and (eq major-mode 'org-mode)
              (unless (and a b (equal (file-truename a) (file-truename b)))
-               (string-prefix-p (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                                          (expand-file-name b) t t)
-                                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                                          (expand-file-name a) t t))))
+               (string-prefix-p
+                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                          (expand-file-name b) t t)
+                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                          (expand-file-name a) t t))))
         t nil)))
-
 
 (defun org-daily-reflection--determine-splits (no-of-splits)
   "Determine how many window splits should be made.
