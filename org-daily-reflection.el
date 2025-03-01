@@ -1,8 +1,8 @@
-;;; org-daily-reflection.el --- concurrent display of org-roam dailies  -*- lexical-binding: t; -*-
+;;; org-daily-reflection.el --- Concurrent display of org(-roam) dailies  -*- lexical-binding: t; -*-
 
-;; Org Daily Reflection - compare N org(-roam) dailies at M intervals 
+;; Org Daily Reflection - Compare `N' org(-roam) dailies at `M' intervals
 
-;; Copyright (C) 2024 Benjamin Slade
+;; Copyright (C) 2024–2025 Benjamin Slade
 
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
@@ -33,8 +33,8 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
-;; Reflect on your org-roam daily journal entries. Shows a range of
-;; split windows, each with an org-roam daily in them, at specified intervals. 
+;; Reflect on your org(-roam) daily journal entries.  Shows a range of
+;; split windows, each with an org(-roam) daily in them, at specified intervals.
 
 ;; You can use like one does with a paper three- or five-year diary,
 ;; to see what was happening on this day last year, and the year prior, etc.
@@ -48,99 +48,116 @@
 
 ;;; Usage:
 ;; Interactive interface with the function `org-daily-reflect', which
-;; can also be passed a span and range number directly in elisp 
+;; can also be passed a span and range number directly in elisp
 ;; (e.g. 'year and 3, to get dailies comparing this day on
 ;; the last three years.) A few sample one-shot functions with prefix
 ;; `org-daily-reflection-on-last-' are included.
 
 ;;; Advice:
-;; None currently. ... 
+;; None currently.
 
 ;;; Code:
-(eval-when-compile (require 'cl-lib) ;; for cl-loops
-                   (require 'org)) 
+(require 'org)
+(eval-when-compile (require 'cl-lib)) ;; for cl-loops
 
-;; doesn't actually require org-roam,
-;; although currently it has more functionality if org-roam is enabled
-;; (require 'org-roam) 
+;; (require 'org-roam)
+
+;; Note: this package doesn't actually require `org-roam', but it may have more
+;; functionality if `org-roam' is enabled. However, it can also be used with
+;; `org-node' and potentially other Zettelkasten/daily-note `org-mode' related
+;; packages.
 
 (defgroup org-daily-reflection ()
   "Compare N dailies at M intervals."
   :group 'org)
 
 (defcustom org-daily-reflection-disable-org-roam-daily-check nil
-  "Whether or not to check for current buffer actually being an org-roam
-daily or not. (Potentially useful in symlinked or other non-standard
-file-system cases.)"
+  "Check if current buffer is actually being an org-roam daily or not.
+\(Potentially useful in symlinked or other non-standard
+file-system cases.\)"
   :group 'org-daily-reflection
   :type 'boolean)
 
 (defcustom org-daily-reflection-direction-of-window-splits 'auto
-  "Determining direction of window splits. Choices are 'auto, 'horizontal
-or 'vertical. 'auto tries to calculate the optimal direction of split."
+  "This setting determines the direction of window splits.
+Choices are \='auto, \='horizontal or \='vertical.  \='auto tries to
+calculate the optimal direction of split."
   :group 'org-daily-reflection
   :type 'symbol)
 
 (defcustom org-daily-reflection-time-spans '(day week fortnight month year)
-  "Possible time-spans, including days, weeks, fortnights, months, and years,
-by default. You can also add `decade' and/or `century' to this list if you
+  "Possible time-spans: days, weeks, fortnights, months, & years, by default.
+You can also add `decade' and/or `century' to this list if you
 use these spans."
   :group 'org-daily-reflection
   :type 'sexp)
 
-(defcustom org-daily-reflection-leap-day-is-special t 
-  "If `t', then when the time-span is `year' and the current entry is a leap-day,
-then show the previous `n' leap-days (so with 4-year gaps, rather than 1-year).
-If `nil', then just show 365 days before."
+(defcustom org-daily-reflection-leap-day-is-special t
+  "Setting for how leap days are handled.
+If \='t, then when the time-span is `year' & the current entry is a
+leap-day, show the previous `n' leap-days (so with 4-year gaps, rather
+than 1-year).  If \='nil, then just show 365 days before."
   :group 'org-daily-reflection
   :type 'boolean)
 
 (defcustom org-daily-reflection-dailies-directory
-  (when (boundp 'org-roam-dailies-directory)
+  (when (and (boundp 'org-roam-dailies-directory)
+             (boundp 'org-roam-directory))
     (expand-file-name org-roam-dailies-directory org-roam-directory))
   "Path to daily-notes."
   :group 'org-daily-reflection
   :type 'string)
 
 (defcustom org-daily-reflection-capture-keys nil
-  "Template to use for opening dailies. E.g., \"d\" for default.
-(Otherwise, if you have multiple org-roam capture templates,
-you will be asked for each window to interactively choose a template.)"
+  "Template to use for opening dailies.
+E.g., \"d\" for default.
+\(Otherwise, if you have multiple org-roam capture templates,
+you will be asked for each window to interactively choose a template.\)"
   :group 'org-daily-reflection
   :type 'string)
 
 (defcustom org-daily-reflection-capture-nascent-files t
-  "Run org-roam capture functions & hooks (if available) for currently
-non-extant daily journals."
+  "Sets how potential/nascent dailies are handled.
+If \='t, then run org-roam capture functions & hooks (if available) for
+currently non-extant daily journals."
   :group 'org-daily-reflection
   :type 'boolean)
 
 (defcustom org-daily-reflection-close-unmodified-newly-opened-buffers nil
-  "When restoring previous layouts (see function `org-daily-reflection-restore-prior-windows'),
-non-nil settings will also result in closing any daily buffers that
-org-daily-reflection opened itself, unless they're been modified.
-(Daily buffers you had open already are unaffected.)"
+  "Sets if restoring the prior window layout closes auto-opened dailies.
+When restoring previous layouts \(see function
+`org-daily-reflection-restore-prior-windows'\), non-nil settings will
+also result in closing any daily buffers that `org-daily-reflection'
+opened itself, unless they have been modified.
+\(Daily buffers you had open already are unaffected.\)"
   :group 'org-daily-reflection
+  :type 'boolean)
+
+(defcustom org-daily-reflection-force-window-operations nil
+  "When set allow `org-daily-reflection' to force window operations.
+E.g., for `delete-other-windows'."
+  :group 'org-daily-reflectoin
   :type 'boolean)
 
 ;;; interactive wrapper function
 ;;;###autoload
 (defun org-daily-reflection (&optional m n)
-  "Show `n' number of `m' time spans of dailies from the current
-org-mode daily. choices for `n' are integers and choices for `m' are `day',
-`week', `fortnight', `month', `year', `decade', and `century'."
+  "Show `N' number of `M' time spans of dailies from the current org daily.
+Choices for `N' are integers and choices for `M' are \='day,
+\='week, \='fortnight, \='month, \='year, \='decade, and \='century."
   (interactive)
 
   ;; directory check
   (unless org-daily-reflection-dailies-directory
     (user-error "You need to set `org-daily-reflection-dailies-directory'
-before running. (It seems you likely don't have `org-roam-dailies-directory' set.)"))
+before running.  \(It seems you likely don't have
+`org-roam-dailies-directory' set.\)"))
   
   ;; org-daily-reflect directory/file check
   (unless (or
-           (org-daily-reflect--daily-note-p)
+           (org-daily-reflection--daily-note-p)
            org-daily-reflection-disable-org-roam-daily-check)
-    (user-error "Not in a daily-note."))
+    (user-error "Not in a daily-note"))
     
   ;; ask user for `m' and `n' if called interactively
   (let* ((m (or m
@@ -166,10 +183,12 @@ before running. (It seems you likely don't have `org-roam-dailies-directory' set
 
 ;;; main function (called by interactive version)
 (defun org-daily-reflection--reflect (date-list)
-  "Accepts an alist of time-spans and intervals, e.g., 
-(('day . 3) ('month 4) ('year . 2)), and splits up
-the frame into the appropriate number of windows and
-shows the result in chronological order.
+  "The main function for opening org dailies.
+
+Accepts an alist of time-spans and intervals for argument `DATE-LIST',
+e.g., ((\='day . 3) (\='month 4) (\='year . 2)), and splits up the frame
+into the appropriate number of windows and shows the result in
+chronological order.
 
 E.g., given the above example input, the function would
 show the 3 days preceding the current journal entry,
@@ -178,7 +197,7 @@ dailies for 2 years before the earliest of the monthly
 dailies."
   (let (;; count how many windows are needed total
         (total-splits
-          (cl-loop for (key . value) in date-list
+          (cl-loop for (_ . value) in date-list
                    sum value))
         ;;; Unix time issue flag and escape
         (org-daily-reflection--unix-time-issue-maybe nil)
@@ -206,10 +225,10 @@ dailies."
                     (setq start-daily oldest-seen-daily))
 
                   ;; Then, start from the furthest back `m' (`n' `m's ago) date
-                  ;; within each list of time spans, 
+                  ;; within each list of time spans,
                   ;; and successively find+open the journal entry for those dailies:
                   (cl-loop for i from n downto 1
-                           with inner-collected-dates = nil 
+                           with inner-collected-dates = nil
                            do (let* ((last-seen-daily
                                       (org-daily-reflection--determine-prev-journal-entry
                                        (org-read-date nil nil start-daily)
@@ -256,10 +275,12 @@ be represented correctly. See docstring for `org-read-date-force-compatible-date
 for more information."))))
 
 ;;; note-check
-(defun org-daily-reflect--daily-note-p ()
-  "Return t if current-buffer is an org-mode file in
-`org-daily-reflection-dailies-directory' (which is set by default
-to `org-roam-dailies-directory' if available), nil otherwise."
+(defun org-daily-reflection--daily-note-p ()
+  "Check whether current buffer is an `org-mode' file in the daily directory.
+
+Return \='t if `current-buffer' is an `org-mode' file in
+`org-daily-reflection-dailies-directory' (which is set by default to
+`org-roam-dailies-directory' if available), \='nil otherwise."
   (when-let ((a (expand-file-name
                  (buffer-file-name (buffer-base-buffer))))
              (b (expand-file-name
@@ -275,8 +296,10 @@ to `org-roam-dailies-directory' if available), nil otherwise."
 
 
 (defun org-daily-reflection--determine-splits (no-of-splits)
-  "Split the frame into `no-of-splits' number of windows in the
-appropriate configuration."
+  "Determine how many window splits should be made.
+Calculate which direction the frame should be split in order to
+reasonably fit `NO-OF-SPLITS' number of windows in the appropriate
+configuration."
   (let ((split-direction
          org-daily-reflection-direction-of-window-splits))
     (when (equal split-direction 'auto)
@@ -285,8 +308,8 @@ appropriate configuration."
         ;; if screen is less than 80 pixes in width, or the
         ;; display is longer than it is wide, then set
         ;; split to horizontal, otherwise vertical.
-        (if (or (< width 80)   
-                (< (/ width height) 1)) 
+        (if (or (< width 80)
+                (< (/ width height) 1))
             (setq split-direction 'horizontal)
           (setq split-direction 'vertical))))
     
@@ -301,9 +324,13 @@ appropriate configuration."
       
       (unless ;; restore window configuration and notify user if error in splitting
           (ignore-errors ;; return nil if error
-            (delete-other-windows)
+            (let ((ignore-window-parameters
+                   (if org-daily-reflection-force-window-operations
+                       t
+                     ignore-window-parameters)))
+              (delete-other-windows))
             ;; (cl-loop for i from (1- no-of-splits) downto 1
-            (cl-loop for i from no-of-splits downto 1             
+            (cl-loop for i from no-of-splits downto 1
                      do
                      (progn
                        (funcall reflect-split)
@@ -316,8 +343,9 @@ appropriate configuration."
                        " windows."))))))
 
 (defun org-daily-reflection--prev-node-extant-file (org-date)
-  "Determines whether a daily already exists for
-`org-date' date; return its path if it does."
+  "Check if daily exists for `ORG-DATE'.
+Determines whether a daily already exists for `ORG-DATE' date; return
+its path if it does."
   (let ((potential-file
          (concat (expand-file-name org-daily-reflection-dailies-directory)
                  "/" org-date ".org")))
@@ -325,8 +353,9 @@ appropriate configuration."
       potential-file)))
 
 (defun org-daily-reflection--determine-prev-journal-entry (org-curr-date offset unit)
-  "Find the appropriate daily journal that is `offset' number of 
-`units' before `org-curr-date'."
+  "Determine the correct previous daily note date.
+Find the date for the daily journal that would `OFFSET' number of `UNIT'
+before `ORG-CURR-DATE'."
   (let* ((ocd-date (decode-time (org-time-string-to-time org-curr-date)))
          (ocd-year (nth 5 ocd-date))
          (ocd-month (nth 4 ocd-date))
@@ -396,19 +425,19 @@ appropriate configuration."
         (org-read-date nil nil
                        (concat "--" (number-to-string back-by) "d")
                        nil (org-time-string-to-time org-curr-date))))
-     (t (user-error "Unrecognised unit.")))))
+     (t (user-error "Unrecognised unit")))))
 
-(setq org-daily-reflection--list-of-newly-opened-entries nil)
+(defvar org-daily-reflection--list-of-newly-opened-entries nil)
 
 (defun org-daily-reflection--open-prev-journal-entry (earlier-journal-entry)
-  "Open the appropriate daily journal that is `offset' number of 
-`units' before `org-curr-date'."
+  "Function to open a daily journal entry.
+Open the daily journal from date `EARLIER-JOURNAL-ENTRY'."
 
   (let* (;; set locally to allow proper opening of potential entries:
          (org-read-date-force-compatible-dates nil)
          ;; record if such a daily exists on the file-system already, and its location if so
          (daily-existing-file-location (org-daily-reflection--prev-node-extant-file earlier-journal-entry))
-         (target-daily-open-already (when daily-existing-file-location 
+         (target-daily-open-already (when daily-existing-file-location
                                       (get-file-buffer daily-existing-file-location))))
 
     ;; If it is available, then run `org-roam-dailies--capture'
@@ -418,7 +447,7 @@ appropriate configuration."
     ;; this creates a daily-note for TIME (first arg) if necessary.
              
     (if (and (fboundp 'org-roam-dailies--capture)
-             org-daily-reflection-capture-nascent-files)       
+             org-daily-reflection-capture-nascent-files)
         ;; run org-daily capture function
         (org-roam-dailies--capture
          (org-read-date nil t
@@ -457,21 +486,28 @@ appropriate configuration."
 ;;; restore window layout
 ;;;###autoload
 (defun org-daily-reflection-close-reflection-newly-opened ()
-  "Called by `org-daily-reflection-layout-toggle' when
-variable `org-daily-reflection-close-unmodified-newly-opened-bufffers'
-is non-nil. Can also be used interactively."
+  "Close buffers that were automatically opened by `org-daily-reflection'.
+This function closes the buffers of any unmodified daily entries that
+were opened by `org-daily-reflection'.  It does not close daily entry
+buffers that were already open, or daily entry buffers that have been
+modified and unsaved.
+
+Called by `org-daily-reflection-layout-toggle' when variable
+`org-daily-reflection-close-unmodified-newly-opened-bufffers' is
+non-nil.
+
+ Can also be used interactively."
   (interactive)
   (cl-labels ((remove-from-newly-opened-list (buf)
                 (setq org-daily-reflection--list-of-newly-opened-entries
                       (remove buf org-daily-reflection--list-of-newly-opened-entries))))
     (dolist (buf org-daily-reflection--list-of-newly-opened-entries)
       (unless (buffer-live-p buf)
-        (remove-from-newly-opne)
-           (and
-            (buffer-live-p buf)
-            (not (buffer-modified-p buf)))
-         (kill-buffer buf)
-  ))))
+        (remove-from-newly-opened-list buf)
+        (when
+            (and (buffer-live-p buf)
+                 (not (buffer-modified-p buf)))
+          (kill-buffer buf))))))
 
 ;;;###autoload
 (defun org-daily-reflection-restore-prior-windows ()
@@ -483,8 +519,9 @@ is non-nil. Can also be used interactively."
 
 ;;;###autoload
 (defun org-daily-reflection-layout-toggle ()
-  "Either restore the window layout present before user reflected on
-daily journals, or switch back to the last org-daily-reflection
+  "Toggle between daily reflection window layout and previous layout.
+Either restore the window layout present before user reflected on
+daily journals, or switch back to the last `org-daily-reflection'
 window layout."
   (interactive)
   (if (get-register 'org-daily-reflect--old)
@@ -499,43 +536,44 @@ window layout."
            'org-daily-reflect--old)
           (jump-to-register 'org-daily-reflect--mirrors)
           (set-register 'org-daily-reflect--mirrors nil))
-      (user-error "Something went wrong."))))
+      (user-error "Something went wrong"))))
 
 ;;; various predefined reflection commands
 ;;;###autoload
 (defun org-daily-reflection-on-last-three-years ()
-  "Compare the daily for the current day to the same day on the
+  "Daily entries for the current day of the previous 2 years.
+Compare the daily for the current day to the same day on the
 previous two years."
   (interactive)
   (org-daily-reflection 'year 2))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-three-months ()
-  "Compare the daily for the last three months."
+  "Compare the daily entries for the last three months."
   (interactive)
   (org-daily-reflection 'month 2))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-two-fortnights ()
-  "Compare the daily for today and the preceding fortnight."
+  "Compare the daily entries for today and the preceding fortnight."
   (interactive)
   (org-daily-reflection 'fortnight 1))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-four-weeks ()
-  "Compare the daily for the last four weeks."
+  "Compare the daily entries for the last four weeks."
   (interactive)
   (org-daily-reflection 'week 3))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-five-decades ()
-  "Compare the daily for the last half century."
+  "Compare the daily entries for the last half century."
   (interactive)
   (org-daily-reflection 'decade 4))
 
 ;;;###autoload
 (defun org-daily-reflection-on-last-five-days ()
-  "Compare the daily for the last five days."
+  "Compare the daily entries for the last five days."
   (interactive)
   (org-daily-reflection 'day 4))
 

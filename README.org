@@ -1,5 +1,5 @@
 * Org Daily Reflection
-Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]]). Shows a range of split windows, each with an org-roam daily in them, at specified intervals. 
+Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]] or similar daily note systems). Shows a range of split windows, each with a daily journal entry in them, at specified intervals. 
 
 [[./images/n-year-diary.jpg]]
 
@@ -15,7 +15,7 @@ But you could also look at the last three days of daily journals...
 
 A general interactive interface can be accessed via the command =org-daily-reflect=, which will ask the user for a time-span (e.g. "year") and an integer range ("3"). When called non-interactively, it also be passed a span and range number (e.g., =(org-daily-reflect 'year 3)=, to get dailies comparing this day on the preceding three years.)
 
-A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of org-roam dailies). The user can create new functions or commands using these models for their desired reflections.
+A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of daily entries). The user can create new functions or commands using these models for their desired reflections.
 
 ** Version 0.03334 additional functionality
 - added =org-daily-reflection-restore-prior-windows= function which restores the pre-reflection window configuration. (Different from =org-daily-reflection-layout-toggle=, which is intended for toggling back and forth.) Also a user-configurable setting, ~org-daily-reflection-close-unmodified-newly-opened-buffers~ (defaulting to ~nil~) for whether dailies that were not previously open (and have not been modified) that were opened by Org Daily Reflection should be closed when calling =org-daily-reflection-restore-prior-windows=. Windows opened by Org Daily Reflection can be ordered to close regardless of the setting via the interactive command =org-daily-reflection-close-reflection-newly-opened=.
@@ -31,7 +31,20 @@ A few sample one-shot functions with prefix =org-reflect-on-last-= are included 
 ** Details and Customisation
 Org Daily Reflect does not, in fact, actually require the Org-roam package, so it should be able to be used with other daily journal systems (certainly with [[https://github.com/meedstrom/org-node][Org Node]] (which I use) and probably with [[https://protesilaos.com/emacs/denote][Denote]]). Currently it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.) See below, esp. the "TODO" notes for more information.
 
-This package /optionally/ uses =org-roam-dailies--capture= to open (actual or potential) daily journal entries, but it will still work without it. And even some users who do have Org Roam installed may prefer to turn off =org-daily-reflection-capture-nascent-files= (which will disable the call to =org-roam-dailies--capture=) in order to not create new potential journal entries for missing dates (though when =org-dailies--capture= is utilised, any non-previously existing journal entries are marked as "unmodified" so they will not trigger any "unsaved file" warnings). (When =org-daily-reflection-capture-nascent-files= is set to =nil=, or =org-roam-dailies--capture= is unavailable, it will instead just insert "missing journal entry" notes in the appropriate window.)
+This package /optionally/ uses =org-roam-dailies--capture= to open (actual or
+potential) daily journal entries, but it will still work without it. And even
+some users who do have Org Roam installed may prefer to turn off
+=org-daily-reflection-capture-nascent-files= (which will disable the call to
+=org-roam-dailies--capture=) in order to not create new potential journal entries
+for missing dates. However, when =org-dailies--capture= is utilised, any
+non-previously existing journal entries are marked as "unmodified" so they will
+not trigger any "unsaved file" warnings. So, personally I just leave
+=org-daily-reflection-capture-nascent-files= set on, because since Org Daily
+Reflection they won't be permanently spuriously created, nor will you be
+prompted to save them unless you actually add/modify the file. When
+=org-daily-reflection-capture-nascent-files= is set to =nil=, or
+=org-roam-dailies--capture= is unavailable, it will instead just insert "missing
+journal entry" notes in the appropriate window.
 
 It also tries setting the location it uses for looking up dailies (set in  =org-daily-reflection-dailies-directory=) to the value of =org-roam-dailies-directory=, but this variable can be manually set.
 
@@ -70,7 +83,9 @@ or [[https://github.com/radian-software/straight.el][straight]]:
   :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
 
-** TODO
+** TODO TODOs
+(Feel free to submit pull requests, or suggestions. Please file issues as necessary for these or other matters.)
+
 *** Filename customisation
 In its present state, Org Daily Reflection it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.), so the filename format is currently hard-coded, but future revisions may allow for other formats (though the filename would somehow).
 
@@ -79,11 +94,11 @@ One addition question here is possibly handling "supra-dailies", i.e., the case 
 *** Single-file datetrees
 Since this is not necessarily tied to Org-roam, it could also handle other daily journal type setups, including single-file note [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetrees]]. [[https://www.reddit.com/r/emacs/comments/1einc51/org_roam_daily_reflection_a_new_package_for/lgdj7vt/][Apparently one user]] has managed to modify it accordingly, but I would like to include this as built-in package functionality
 
-*** Compatibility with other Org(ish) setups (Denote, Org-Node)
-I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups?)
+*** Compatibility with other Org(ish) setups (e.g., Denote, Org-Node)
+I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups? E.g., [[https://github.com/rtrppl/orgrr][orgrr]], [[https://thanosapollo.org/projects/org-gnosis/][org-gnosis]].) In fact, there is little which necessarily ties it to Org-mode, so it could be adapted to other Emacs non-Org journalling systems.
 
-I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and also to add additional optional feature to take advantage of Org Node features, such as specifying a series to query rather than looking at a directory. This should be faster on devices with potential high cost to filesystem access (not pointing fingers, but Android) and also allow for reflection on other types of series.
+I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and would also like to add additional optional feature to take advantage of Org Node features, such as specifying a series to query rather than looking at a directory. This should be faster on devices with potential high cost to filesystem access ([[https://babbagefiles.xyz/termux-extra-keys-emacs-org-roam-node-android/#fn:7][not pointing fingers, but 👉Android]]) and also allow for reflection on other types of series.
 
 ** Notes
-Paper multi-year diary image from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
+Paper multi-year diary image in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
  
