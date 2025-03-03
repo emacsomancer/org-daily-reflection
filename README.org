@@ -86,7 +86,7 @@ or [[https://github.com/quelpa/quelpa][quelpa]]:
   :quelpa (org-daily-reflection :fetcher github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
   
-or [[https://github.com/radian-software/straight.el][straight]] (though probably prefer ~elpaca~ at this point[fn:elpaca]):
+or [[https://github.com/radian-software/straight.el][straight]] (though probably prefer ~elpaca~ at this point[fn:1]):
 #+begin_src elisp
 (use-package org-daily-reflection
   :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
@@ -112,4 +112,4 @@ I am current user of Org Node, which itself is currently compatible with Org-roa
 Paper multi-year diary image in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
 
 * Footnotes
-[fn:elpaca] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
+[fn:1] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
