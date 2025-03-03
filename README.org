@@ -4,8 +4,7 @@
 Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]] or similar daily note systems). Shows a range of split windows, each with a daily journal entry in them, at specified intervals. 
 
 
-[[./images/n-year-diary.jpg]]
-@@html:<a id="#fnr.0"></a>@@
+[[./images/n-year-diary.jpg]][fn:0]
 
 You can use Org Daily Reflection like one does with a paper three- or five-year diary, to see what was happening on this day last year, and the year prior, &c.
 
