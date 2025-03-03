@@ -3,7 +3,7 @@
 * Org Daily Reflection
 Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]] or similar daily note systems). Shows a range of split windows, each with a daily journal entry in them, at specified intervals. 
 
-https://github.com/emacsomancer/org-daily-reflection?tab=readme-ov-file#fnr.0
+
 [[./images/n-year-diary.jpg]]
 @@html:<a id="#fnr.0"></a>@@
 
