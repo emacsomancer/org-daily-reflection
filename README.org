@@ -111,4 +111,5 @@ I am current user of Org Node, which itself is currently compatible with Org-roa
 
 * Notes
 [fn:0] Paper multi-year diary image in ~images/n-year-diary.jpg~ included in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
+
 [fn:1] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
