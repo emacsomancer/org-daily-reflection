@@ -17,6 +17,9 @@ A general interactive interface can be accessed via the command =org-daily-refle
 
 A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of daily entries). The user can create new functions or commands using these models for their desired reflections.
 
+** Version 0.3
+- Now on MELPA.
+- Minor cleanup.
 ** Version 0.03334 additional functionality
 - added =org-daily-reflection-restore-prior-windows= function which restores the pre-reflection window configuration. (Different from =org-daily-reflection-layout-toggle=, which is intended for toggling back and forth.) Also a user-configurable setting, ~org-daily-reflection-close-unmodified-newly-opened-buffers~ (defaulting to ~nil~) for whether dailies that were not previously open (and have not been modified) that were opened by Org Daily Reflection should be closed when calling =org-daily-reflection-restore-prior-windows=. Windows opened by Org Daily Reflection can be ordered to close regardless of the setting via the interactive command =org-daily-reflection-close-reflection-newly-opened=.
 ** Version 0.033 additional functionality
@@ -57,9 +60,13 @@ The default time spans are "day", "week", "fortnight", "month", and "year", but 
 [[./images/5-centuries.png][./images/5-centuries.png]]
 
 ** Installation
-Not yet on MELPA or similar.
+*** Melpa
+[[https://melpa.org/#/org-daily-reflection][file:https://melpa.org/packages/org-daily-reflection-badge.svg]]
 
-You can manually clone/download and =require=, or install with an alternative/enhanced package manager, like [[https://github.com/progfolio/elpaca][elpaca]]:
+Now ([2025-03-02 Sun]) available on MELPA! Install however you usually get your packages. (E.g., ~use-package~ with MELPA repo installed.)
+
+*** Alternatives
+You can of course manually clone/download and =require=, or install with an enhanced package manager, like [[https://github.com/progfolio/elpaca][elpaca]]:
 #+begin_src elisp
 (use-package org-daily-reflection
   :ensure (:host github :repo "emacsomancer/org-daily-reflection"))
@@ -77,7 +84,7 @@ or [[https://github.com/quelpa/quelpa][quelpa]]:
   :quelpa (org-daily-reflection :fetcher github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
   
-or [[https://github.com/radian-software/straight.el][straight]]:
+or [[https://github.com/radian-software/straight.el][straight]] (though probably prefer ~elpaca~ at this point[fn:elpaca]):
 #+begin_src elisp
 (use-package org-daily-reflection
   :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
@@ -101,4 +108,6 @@ I am current user of Org Node, which itself is currently compatible with Org-roa
 
 ** Notes
 Paper multi-year diary image in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
- 
+
+* Footnotes
+[fn:elpaca] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."

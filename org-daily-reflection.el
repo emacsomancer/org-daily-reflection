@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
-;; Package-Version: 0.03334
-;; Version: 0.03334
+;; Package-Version: 0.31
+;; Version: 0.31
 ;; Package-Requires: ((emacs "26.1") (org "9.4"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -40,14 +40,22 @@
 ;; to see what was happening on this day last year, and the year prior, etc.
 
 ;; But you could also look at the last six days of daily journals, or dailies
-;; at other specified intervals (e.g. days, weeks, fortnights, months,
+;; at other specified intervals (e.g., days, weeks, fortnights, months,
 ;; years, decades, centuries).
 
 ;;; Installation:
-;; Not yet on Melpa. See README.org for suggestions.
+;; Available on MELPA: https://melpa.org/#/org-daily-reflection
+;;
+;; To install manually, clone the git repo somewhere and put it in your
+;; load-path, e.g., add something like this to your init.el:
+;; (add-to-list 'load-path
+;;             "~/.emacs.d/org-daily-reflection/")
+;;  (require 'org-daily-reflection)
+;;
+;; See README.org for more details and suggestions.
 
 ;;; Usage:
-;; Interactive interface with the function `org-daily-reflect', which
+;; Interactive interface with the function `org-daily-reflection', which
 ;; can also be passed a span and range number directly in elisp
 ;; (e.g. 'year and 3, to get dailies comparing this day on
 ;; the last three years.) A few sample one-shot functions with prefix
@@ -289,7 +297,7 @@ Return \='t if `current-buffer' is an `org-mode' file in
              (b (expand-file-name
                  org-daily-reflection-dailies-directory)))
     (setq a (expand-file-name a))
-    (if (and (eq major-mode 'org-mode)
+    (if (and (derived-mode-p 'org-mode)
              (unless (and a b (equal (file-truename a) (file-truename b)))
                (string-prefix-p
                 (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
@@ -470,7 +478,8 @@ Open the daily journal from date `EARLIER-JOURNAL-ENTRY'."
         (switch-to-buffer
          (generate-new-buffer-name " *Org Roam Daily Reflection Absences*"))
         (goto-char (point-max))
-        (insert (concat "\n\f\n* No daily journal entry for " earlier-journal-entry ".\n"))
+        (insert (format "\n\f\n* No daily journal entry for %s.\n"
+                        earlier-journal-entry))
         (narrow-to-page)
         (visual-line-mode)
         (goto-char (point-min))))
