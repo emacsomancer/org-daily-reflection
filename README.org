@@ -1,4 +1,4 @@
-#+options: f:t
+#+options: f:t # for github footnotes to work
 
 * Org Daily Reflection
 Reflect on your [[https://orgmode.org/][Org-mode]]-related daily journal entries (currently set-up mainly for  [[https://www.orgroam.com/][org-roam]] or similar daily note systems). Shows a range of split windows, each with a daily journal entry in them, at specified intervals. 
@@ -108,8 +108,8 @@ I would like to see if Org Daily Reflection in its current state can be used wit
 
 I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and would also like to add additional optional feature to take advantage of Org Node features, such as specifying a series to query rather than looking at a directory. This should be faster on devices with potential high cost to filesystem access ([[https://babbagefiles.xyz/termux-extra-keys-emacs-org-roam-node-android/#fn:7][not pointing fingers, but 👉Android]]) and also allow for reflection on other types of series.
 
-** Notes
-Paper multi-year diary image in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
+* Miscellaneous Notes
+- Paper multi-year diary image in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
 
 * Footnotes
 [fn:1] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
