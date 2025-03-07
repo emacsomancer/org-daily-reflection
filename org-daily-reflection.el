@@ -510,16 +510,10 @@ non-nil.
 
  Can also be used interactively."
   (interactive)
-  (cl-labels ((remove-from-newly-opened-list (buf)
-                (setq org-daily-reflection--list-of-newly-opened-entries
-                      (remove buf org-daily-reflection--list-of-newly-opened-entries))))
-    (dolist (buf org-daily-reflection--list-of-newly-opened-entries)
-      (unless (buffer-live-p buf)
-        (remove-from-newly-opened-list buf)
-        (when
-            (and (buffer-live-p buf)
-                 (not (buffer-modified-p buf)))
-          (kill-buffer buf))))))
+  (while-let ((buf (pop org-daily-reflection--list-of-newly-opened-entries)))
+    (and (buffer-live-p buf)
+         (not (buffer-modified-p buf))
+         (kill-buffer buf))))
 
 ;;;###autoload
 (defun org-daily-reflection-restore-prior-windows ()
