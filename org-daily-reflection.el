@@ -487,10 +487,11 @@ Open the daily journal from date `EARLIER-JOURNAL-ENTRY'."
     ;; Mark non-previously existing daily buffers as unmodified
     ;; (this prevents littering `buffers' with spurious would-be files).
     (unless (org-daily-reflection--prev-node-extant-file earlier-journal-entry)
-      (set-buffer-modified-p nil)
-      (unless target-daily-open-already
+      (set-buffer-modified-p nil))
+    ;; if daily wasn't open already, add to list of Daily Reflection opened entries
+    (unless target-daily-open-already
       (setq org-daily-reflection--list-of-newly-opened-entries
-            (cons (current-buffer) org-daily-reflection--list-of-newly-opened-entries)))))
+            (cons (current-buffer) org-daily-reflection--list-of-newly-opened-entries))))
 
     ;; move the window focus to the next window (right or down).
     (other-window 1))

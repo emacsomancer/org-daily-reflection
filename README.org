@@ -93,23 +93,23 @@ or [[https://github.com/radian-software/straight.el][straight]] (though probably
   :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
 #+end_src
 
-** TODO TODOs
+** TODOs
 (Feel free to submit pull requests, or suggestions. Please file issues as necessary for these or other matters.)
 
-*** Filename customisation
+*** TODO Filename customisation
 In its present state, Org Daily Reflection it relies on being told a directory which contains Org files which are all of the form =<YYYY-MM-DD>.org=. (E.g., =2021-12-29.org=, =2024-08-05=, &c.), so the filename format is currently hard-coded, but future revisions may allow for other formats (though the filename would somehow).
 
 One addition question here is possibly handling "supra-dailies", i.e., the case where a user has multiple separate files for a single day (maybe representing hour-minute-second timestamps). Handling examining filenames with additional information is not itself an issue here, but it is not clear what should be shown in the split windows in this case. Potentially windows could be split both vertically and horizontally, and one of the splits could contain all (or as many as will fit?) of the sub-day divisions. (I'm not currently planning on tackling this as I don't know of people with this approach, but if there are, it would be an interesting problem to ponder.) 
 
-*** Single-file datetrees
+*** TODO Single-file datetrees
 Since this is not necessarily tied to Org-roam, it could also handle other daily journal type setups, including single-file note [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/tree/lisp/org-datetree.el][Org-mode datetrees]]. [[https://www.reddit.com/r/emacs/comments/1einc51/org_roam_daily_reflection_a_new_package_for/lgdj7vt/][Apparently one user]] has managed to modify it accordingly, but I would like to include this as built-in package functionality
 
-*** Compatibility with other Org(ish) setups (e.g., Denote, Org-Node)
+*** TODO Compatibility with other Org(ish) setups (e.g., Denote, Org-Node)
 I would like to see if Org Daily Reflection in its current state can be used with Denote. (And possibly other non-Org-roam but Org-related Emacs multi-file note-taking setups? E.g., [[https://github.com/rtrppl/orgrr][orgrr]], [[https://thanosapollo.org/projects/org-gnosis/][org-gnosis]].) In fact, there is little which necessarily ties it to Org-mode, so it could be adapted to other Emacs non-Org journalling systems.
 
 I am current user of Org Node, which itself is currently compatible with Org-roam, and plan for Org Daily Reflection to maintain compatibility with Org Node, and would also like to add additional optional feature to take advantage of Org Node features, such as specifying a series to query rather than looking at a directory. This should be faster on devices with potential high cost to filesystem access ([[https://babbagefiles.xyz/termux-extra-keys-emacs-org-roam-node-android/#fn:7][not pointing fingers, but 👉Android]]) and also allow for reflection on other types of series.
 
 * Notes
-[fn:0] Paper multi-year diary image in ~images/n-year-diary.jpg~ included in ~README.org~ from [[https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor, Keene, NH]].
+[fn:0] Paper multi-year diary image in ~images/n-year-diary.jpg~ included in ~README.org~ from [[https://web.archive.org/web/20241015010427/https://memoryholevintage.com/products/handwritten-1936-1940-five-year-diary-journal-of-ethel-g-taylor-keene-nh][Handwritten 1936-1940 Five Year Diary Journal of Ethel G. Taylor living in Keene, New Hampshire, USA]].
 
-[fn:1] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: "...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
+[fn:1] See [[https://www.reddit.com/r/emacs/comments/1ilcodh/elpaca_updates/][here]]: @"...Basic lock file support has been added [to elpaca]. With this addition, there's little reason for me to recommend straight.el anymore...."
