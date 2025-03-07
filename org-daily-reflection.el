@@ -9,7 +9,7 @@
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
 ;; Package-Version: 0.31
 ;; Version: 0.31
-;; Package-Requires: ((emacs "26.1") (org "9.4"))
+;; Package-Requires: ((emacs "26.1") (org "9.4") (compat "30.0.0.0"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
 
@@ -65,8 +65,10 @@
 ;; None currently.
 
 ;;; Code:
+
+;;;; Dependency requires
+
 (require 'org)
-(eval-when-compile (require 'cl-lib)) ;; for cl-loops
 
 ;; (require 'org-roam)
 
@@ -74,6 +76,18 @@
 ;; functionality if `org-roam' is enabled. However, it can also be used with
 ;; `org-node' and potentially other Zettelkasten/daily-note `org-mode' related
 ;; packages.
+
+(eval-when-compile (require 'cl-lib)) ;; for `cl-loop'
+
+(require 'compat) ;; for `while-let' (at least)
+
+;; Macros `when-let',`if-let' are obsolete as of Emacs 31.1.
+;; Advised to use `when-let*' (or `and-let*'), `if-let*', respectively.
+(when (version<= emacs-version "28")
+  ;; `when-let*' (& `and-let*'), `if-let*' macros in 'subr-x in Emacs 28 & older
+  (require 'subr-x))
+
+;;;; Customisation
 
 (defgroup org-daily-reflection ()
   "Compare N dailies at M intervals."
@@ -148,6 +162,7 @@ E.g., for `delete-other-windows'."
   :type 'boolean)
 
 ;;; interactive wrapper function
+
 ;;;###autoload
 (defun org-daily-reflection (&optional m n)
   "Show `N' number of `M' time spans of dailies from the current org daily.
@@ -285,14 +300,15 @@ dailies."
 be represented correctly. See docstring for `org-read-date-force-compatible-dates'
 for more information."))))
 
-;;; note-check
+;;; Checks
+
 (defun org-daily-reflection--daily-note-p ()
   "Check whether current buffer is an `org-mode' file in the daily directory.
 
 Return \='t if `current-buffer' is an `org-mode' file in
 `org-daily-reflection-dailies-directory' (which is set by default to
 `org-roam-dailies-directory' if available), \='nil otherwise."
-  (when-let ((a (expand-file-name
+  (when-let* ((a (expand-file-name
                  (buffer-file-name (buffer-base-buffer))))
              (b (expand-file-name
                  org-daily-reflection-dailies-directory)))
@@ -440,6 +456,8 @@ before `ORG-CURR-DATE'."
 
 (defvar org-daily-reflection--list-of-newly-opened-entries nil)
 
+;;; Open previous entry
+
 (defun org-daily-reflection--open-prev-journal-entry (earlier-journal-entry)
   "Function to open a daily journal entry.
 Open the daily journal from date `EARLIER-JOURNAL-ENTRY'."
@@ -497,6 +515,7 @@ Open the daily journal from date `EARLIER-JOURNAL-ENTRY'."
     (other-window 1))
 
 ;;; restore window layout
+
 ;;;###autoload
 (defun org-daily-reflection-close-reflection-newly-opened ()
   "Close buffers that were automatically opened by `org-daily-reflection'.
@@ -546,6 +565,7 @@ window layout."
       (user-error "Something went wrong"))))
 
 ;;; various predefined reflection commands
+
 ;;;###autoload
 (defun org-daily-reflection-on-last-three-years ()
   "Daily entries for the current day of the previous 2 years.
@@ -583,6 +603,7 @@ previous two years."
   "Compare the daily entries for the last five days."
   (interactive)
   (org-daily-reflection 'day 4))
+
 
 (provide 'org-daily-reflection)
 

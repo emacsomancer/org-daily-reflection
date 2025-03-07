@@ -63,34 +63,50 @@ The default time spans are "day", "week", "fortnight", "month", and "year", but 
 [[./images/5-centuries.png][./images/5-centuries.png]]
 
 ** Installation
+(When using ~use-package~, especially if you use ~elpaca~ or ~straight~, you may want to specify ~:after (org-roam)~ to make sure your daily directory is set properly; also if you specify keybindings for any note-taking related packages (e.g., Org Node), you may want to add these here as well (e.g., ~:after (org-roam org-node)~).)
 *** Melpa
 [[https://melpa.org/#/org-daily-reflection][file:https://melpa.org/packages/org-daily-reflection-badge.svg]]
 
-Now ([2025-03-02 Sun]) available on MELPA! Install however you usually get your packages. (E.g., ~use-package~ with MELPA repo installed.)
+Now ([2025-03-02 Sun]) available on MELPA! Install however you usually get your packages. E.g., ~use-package~ with MELPA repo installed:
+
+#+begin_src elisp
+(use-package org-daily-reflection
+  ;; :ensure t ; maybe, depending on your use-package setup
+  ;; :after (org-roam) ; maybe, to get directory right
+  )
+#+end_src
 
 *** Alternatives
 You can of course manually clone/download and =require=, or install with an enhanced package manager, like [[https://github.com/progfolio/elpaca][elpaca]]:
 #+begin_src elisp
 (use-package org-daily-reflection
-  :ensure (:host github :repo "emacsomancer/org-daily-reflection"))
+  :ensure (:host github :repo "emacsomancer/org-daily-reflection")
+  ;; :after (org-roam) ; maybe, to get directory right
+  )
 #+end_src
 
 or [[https://github.com/slotThe/vc-use-package][vc-use-package]] (probably the lightest-weight option):
 #+begin_src elisp
 (use-package org-daily-reflection
-  :vc (:fetcher github :repo "emacsomancer/org-daily-reflection"))
+  :vc (:fetcher github :repo "emacsomancer/org-daily-reflection")
+  ;; :after (org-roam) ; maybe, to get directory right
+  )
   #+end_src
 
 or [[https://github.com/quelpa/quelpa][quelpa]]:
 #+begin_src elisp
 (use-package org-daily-reflection
-  :quelpa (org-daily-reflection :fetcher github :repo "emacsomancer/org-daily-reflection"))
+  :quelpa (org-daily-reflection :fetcher github :repo "emacsomancer/org-daily-reflection")
+  ;; :after (org-roam) ; maybe, to get directory right
+  )
 #+end_src
   
 or [[https://github.com/radian-software/straight.el][straight]] (though probably prefer ~elpaca~ at this point[fn:1]):
 #+begin_src elisp
 (use-package org-daily-reflection
-  :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection"))
+  :straight (org-daily-reflection :type git :host github :repo "emacsomancer/org-daily-reflection")
+  ;; :after (org-roam) ; maybe, to get directory right
+  )
 #+end_src
 
 ** TODOs
