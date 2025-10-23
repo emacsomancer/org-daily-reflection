@@ -564,6 +564,8 @@ window layout."
           (set-register 'org-daily-reflect--mirrors nil))
       (user-error "Something went wrong"))))
 
+(defalias 'org-daily-reflection-exit-or-enter-reflecting 'org-daily-reflection-layout-toggle)
+
 ;;; various predefined reflection commands
 
 ;;;###autoload
