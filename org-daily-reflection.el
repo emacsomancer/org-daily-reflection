@@ -161,6 +161,40 @@ E.g., for `delete-other-windows'."
   :group 'org-daily-reflection
   :type 'boolean)
 
+;;; convenience function to jump to today's daily
+(defun org-daily-reflection-jump-to-today ()
+  "Jump to today's daily."
+  (let ((todays-org-date (format-time-string "%Y-%m-%d"
+                       (seconds-to-time (current-time)))))
+    ;; save jump
+    (window-configuration-to-register 'org-daily-reflect--old-jumped)
+    (if (and (fboundp 'org-roam-dailies--capture)
+             org-daily-reflection-capture-nascent-files)
+        ;; run org-daily capture function
+        (org-roam-dailies--capture
+         (org-read-date nil t
+                        todays-org-date
+                        nil)
+         t
+         org-daily-reflection-capture-keys)
+    
+      ;; Else, if not using Org-roam, for now just try opening the file, if extant
+      ;; and post a message that no entry exists otherwise.
+      (if (org-daily-reflection--prev-node-extant-file earlier-journal-entry)
+          (find-file (concat
+                      (expand-file-name org-daily-reflection-dailies-directory)
+                      "/" todays-org-date ".org"))
+
+        ;; make an invisible buffer and use pages to display missing entry messages:
+        (switch-to-buffer
+         (generate-new-buffer-name " *Org Roam Daily Reflection Absences*"))
+        (goto-char (point-max))
+        (insert (format "\n\f\n* No daily journal entry for %s.\n"
+                        todays-org-date))
+        (narrow-to-page)
+        (visual-line-mode)
+        (goto-char (point-min))))))
+
 ;;; interactive wrapper function
 
 ;;;###autoload
@@ -180,8 +214,10 @@ before running.  \(It seems you likely don't have
   (unless (or
            (org-daily-reflection--daily-note-p)
            org-daily-reflection-disable-org-roam-daily-check)
-    (user-error "Not in a daily-note"))
-    
+    (if (y-or-n-p "Not currently in a daily-note. Would you like to jump to today's daily and continue?")
+        (org-daily-reflection-jump-to-today)
+      (user-error "Not jumping to a daily. Cannot continue. Please retry when you have a daily open in buffer.")))
+  
   ;; ask user for `m' and `n' if called interactively
   (let* ((m (or m
                 (when (called-interactively-p 'any)
@@ -309,7 +345,8 @@ Return \='t if `current-buffer' is an `org-mode' file in
 `org-daily-reflection-dailies-directory' (which is set by default to
 `org-roam-dailies-directory' if available), \='nil otherwise."
   (when-let* ((a (expand-file-name
-                 (buffer-file-name (buffer-base-buffer))))
+                  (buffer-file-name (current-buffer))))
+                 ;; (buffer-file-name (buffer-base-buffer))))
              (b (expand-file-name
                  org-daily-reflection-dailies-directory)))
     (setq a (expand-file-name a))
@@ -541,6 +578,10 @@ non-nil.
   (interactive)
   (when org-daily-reflection-close-unmodified-newly-opened-buffers
     (org-daily-reflection-close-reflection-newly-opened))
+  ;; (when (get-register 'org-daily-reflect--old-jumped)
+    ;; (set-register 'org-daily-reflect--old 'org-daily-reflect--old-jumped)
+    ;; (set-register 'org-daily-reflect--old-jumped nil)
+    ;; )
   (jump-to-register 'org-daily-reflect--old))
 
 ;;;###autoload
@@ -550,19 +591,23 @@ Either restore the window layout present before user reflected on
 daily journals, or switch back to the last `org-daily-reflection'
 window layout."
   (interactive)
-  (if (get-register 'org-daily-reflect--old)
-      (progn
-        (window-configuration-to-register
-         'org-daily-reflect--mirrors)
-        (jump-to-register 'org-daily-reflect--old)
-        (set-register 'org-daily-reflect--old nil))
-    (if (get-register 'org-daily-reflect--mirrors)
+  (if (or (get-register 'org-daily-reflect--old)
+          (get-register 'org-daily-reflect--old-jumped))
         (progn
           (window-configuration-to-register
-           'org-daily-reflect--old)
-          (jump-to-register 'org-daily-reflect--mirrors)
-          (set-register 'org-daily-reflect--mirrors nil))
-      (user-error "Something went wrong"))))
+           'org-daily-reflect--mirrors)
+          (if (get-register 'org-daily-reflect--old-jumped)
+              (jump-to-register 'org-daily-reflect--old-jumped)
+            (jump-to-register 'org-daily-reflect--old))
+          (set-register 'org-daily-reflect--old nil)
+          (set-register 'org-daily-reflect--old-jumped nil))
+      (if (get-register 'org-daily-reflect--mirrors)
+          (progn            
+            (window-configuration-to-register
+             'org-daily-reflect--old)
+            (jump-to-register 'org-daily-reflect--mirrors)
+            (set-register 'org-daily-reflect--mirrors nil))
+        (user-error "Something went wrong"))))
 
 (defalias 'org-daily-reflection-exit-or-enter-reflecting 'org-daily-reflection-layout-toggle)
 
