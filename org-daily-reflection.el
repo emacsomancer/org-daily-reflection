@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
-;; Package-Version: 0.31
-;; Version: 0.31
+;; Package-Version: 0.311
+;; Version: 0.311
 ;; Package-Requires: ((emacs "26.1") (org "9.4") (compat "30.0.0.0"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -128,7 +128,7 @@ than 1-year).  If \='nil, then just show 365 days before."
     (expand-file-name org-roam-dailies-directory org-roam-directory))
   "Path to daily-notes."
   :group 'org-daily-reflection
-  :type 'string)
+  :type 'directory)
 
 (defcustom org-daily-reflection-capture-keys nil
   "Template to use for opening dailies.
@@ -344,20 +344,22 @@ for more information."))))
 Return \='t if `current-buffer' is an `org-mode' file in
 `org-daily-reflection-dailies-directory' (which is set by default to
 `org-roam-dailies-directory' if available), \='nil otherwise."
-  (when-let* ((a (expand-file-name
-                  (buffer-file-name (current-buffer))))
-                 ;; (buffer-file-name (buffer-base-buffer))))
-             (b (expand-file-name
-                 org-daily-reflection-dailies-directory)))
-    (setq a (expand-file-name a))
-    (if (and (derived-mode-p 'org-mode)
-             (unless (and a b (equal (file-truename a) (file-truename b)))
-               (string-prefix-p
-                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                          (expand-file-name b) t t)
-                (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
-                                          (expand-file-name a) t t))))
-        t nil)))
+  (if (eq (buffer-file-name (buffer-base-buffer)) nil)
+      nil
+      (when-let* ((a (expand-file-name
+                      ;; (buffer-file-name (current-buffer))))
+                     (buffer-file-name (buffer-base-buffer))))
+                 (b (expand-file-name
+                     org-daily-reflection-dailies-directory)))
+        (setq a (expand-file-name a))
+        (if (and (derived-mode-p 'org-mode)
+                 (unless (and a b (equal (file-truename a) (file-truename b)))
+                   (string-prefix-p
+                    (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                              (expand-file-name b) t t)
+                    (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
+                                              (expand-file-name a) t t))))
+            t nil))))
 
 (defun org-daily-reflection--determine-splits (no-of-splits)
   "Determine how many window splits should be made.

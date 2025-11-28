@@ -20,6 +20,9 @@ A general interactive interface can be accessed via the command =org-daily-refle
 
 A few sample one-shot functions with prefix =org-reflect-on-last-= are included as well (e.g. =org-reflect-on-last-five-days= to see the preceding five days of daily entries). The user can create new functions or commands using these models for their desired reflections.
 
+** Version 0.311
+- Set type on =org-daily-reflection-dailies-directory= properly as ='directory=.
+- Do pre-check in =org-daily-reflection--daily-note-p= to make sure there actually is a file to run file-name functions on.
 ** Version 0.3
 - Now on MELPA.
 - Minor cleanup.
