@@ -23,6 +23,7 @@ A few sample one-shot functions with prefix =org-reflect-on-last-= are included 
 ** Version 0.311
 - Set type on =org-daily-reflection-dailies-directory= properly as ='directory=.
 - Do pre-check in =org-daily-reflection--daily-note-p= to make sure there actually is a file to run file-name functions on.
+- Offer to start from today's daily if called from a non-daily buffer.  
 ** Version 0.3
 - Now on MELPA.
 - Minor cleanup.
