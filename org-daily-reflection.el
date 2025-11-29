@@ -570,9 +570,14 @@ non-nil.
  Can also be used interactively."
   (interactive)
   (while-let ((buf (pop org-daily-reflection--list-of-newly-opened-entries)))
-    (and (buffer-live-p buf)
-         (not (buffer-modified-p buf))
-         (kill-buffer buf))))
+    (and
+     (bufferp buf)
+     (buffer-live-p buf)
+     (not (buffer-modified-p buf))
+     (kill-buffer buf)))
+  (if (or (get-register 'org-daily-reflect--old)
+            (get-register 'org-daily-reflect--old-jumped))
+        (org-daily-reflection-layout-toggle)))
 
 ;;;###autoload
 (defun org-daily-reflection-restore-prior-windows ()
