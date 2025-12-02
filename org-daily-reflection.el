@@ -7,8 +7,8 @@
 ;; Author: Benjamin Slade <slade@lambda-y.net>
 ;; Maintainer: Benjamin Slade <slade@lambda-y.net>
 ;; URL: https://github.com/emacsomancer/org-daily-reflection
-;; Package-Version: 0.311
-;; Version: 0.311
+;; Package-Version: 0.3111
+;; Version: 0.3111
 ;; Package-Requires: ((emacs "26.1") (org "9.4") (compat "30.0.0.0"))
 ;; Created: 2024-07-27
 ;; Keywords: convenience, frames, terminals, tools, window-system
@@ -211,9 +211,7 @@ before running.  \(It seems you likely don't have
 `org-roam-dailies-directory' set.\)"))
   
   ;; org-daily-reflect directory/file check
-  (unless (or
-           (org-daily-reflection--daily-note-p)
-           org-daily-reflection-disable-org-roam-daily-check)
+  (unless (org-daily-reflection--daily-note-p)
     (if (y-or-n-p "Not currently in a daily-note. Would you like to jump to today's daily and continue?")
         (org-daily-reflection-jump-to-today)
       (user-error "Not jumping to a daily. Cannot continue. Please retry when you have a daily open in buffer.")))
@@ -346,11 +344,12 @@ Return \='t if `current-buffer' is an `org-mode' file in
 `org-roam-dailies-directory' if available), \='nil otherwise."
   (if (eq (buffer-file-name (buffer-base-buffer)) nil)
       nil
+    (if org-daily-reflection-disable-org-roam-daily-check
+        t
       (when-let* ((a (expand-file-name
-                      ;; (buffer-file-name (current-buffer))))
-                     (buffer-file-name (buffer-base-buffer))))
-                 (b (expand-file-name
-                     org-daily-reflection-dailies-directory)))
+                      (buffer-file-name (buffer-base-buffer))))
+                  (b (expand-file-name
+                      org-daily-reflection-dailies-directory)))
         (setq a (expand-file-name a))
         (if (and (derived-mode-p 'org-mode)
                  (unless (and a b (equal (file-truename a) (file-truename b)))
@@ -359,7 +358,7 @@ Return \='t if `current-buffer' is an `org-mode' file in
                                               (expand-file-name b) t t)
                     (replace-regexp-in-string "^\\([A-Za-z]\\):" 'downcase
                                               (expand-file-name a) t t))))
-            t nil))))
+            t nil)))))
 
 (defun org-daily-reflection--determine-splits (no-of-splits)
   "Determine how many window splits should be made.
