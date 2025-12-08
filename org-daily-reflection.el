@@ -582,13 +582,12 @@ non-nil.
 (defun org-daily-reflection-restore-prior-windows ()
   "Restore the pre-reflection window configuration."
   (interactive)
+  (if (get-register 'org-daily-reflect--old-jumped)
+      (jump-to-register 'org-daily-reflect--old-jumped)
+    (when (get-register 'org-daily-reflect--old)
+      (jump-to-register 'org-daily-reflect--old)))
   (when org-daily-reflection-close-unmodified-newly-opened-buffers
-    (org-daily-reflection-close-reflection-newly-opened))
-  ;; (when (get-register 'org-daily-reflect--old-jumped)
-    ;; (set-register 'org-daily-reflect--old 'org-daily-reflect--old-jumped)
-    ;; (set-register 'org-daily-reflect--old-jumped nil)
-    ;; )
-  (jump-to-register 'org-daily-reflect--old))
+    (org-daily-reflection-close-reflection-newly-opened)))
 
 ;;;###autoload
 (defun org-daily-reflection-layout-toggle ()
