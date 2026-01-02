@@ -1,6 +1,6 @@
 ;;; org-daily-reflection.el --- Concurrent display of org(-roam) dailies  -*- lexical-binding: t; -*-
 
-;; Org Daily Reflection - Compare `N' org(-roam) dailies at `M' intervals
+;; Org Daily Reflection - Compare \='N\=' org(-roam) dailies at \='M\=' intervals
 
 ;; Copyright (C) 2024–2025 Benjamin Slade
 
@@ -199,8 +199,8 @@ E.g., for `delete-other-windows'."
 
 ;;;###autoload
 (defun org-daily-reflection (&optional m n)
-  "Show `N' number of `M' time spans of dailies from the current org daily.
-Choices for `N' are integers and choices for `M' are \='day,
+  "Show \='N\=' number of \='M\=' time spans of dailies from the current org daily.
+Choices for \='N\=' are integers and choices for \='M\=' are \='day,
 \='week, \='fortnight, \='month, \='year, \='decade, and \='century."
   (interactive)
 
@@ -214,7 +214,7 @@ before running.  \(It seems you likely don't have
   (unless (org-daily-reflection--daily-note-p)
     (if (y-or-n-p "Not currently in a daily-note. Would you like to jump to today's daily and continue?")
         (org-daily-reflection-jump-to-today)
-      (user-error "Not jumping to a daily. Cannot continue. Please retry when you have a daily open in buffer.")))
+      (user-error "Not jumping to a daily. Cannot continue. Please retry when you have a daily open in buffer")))
   
   ;; ask user for `m' and `n' if called interactively
   (let* ((m (or m
@@ -419,8 +419,8 @@ its path if it does."
 
 (defun org-daily-reflection--determine-prev-journal-entry (org-curr-date offset unit)
   "Determine the correct previous daily note date.
-Find the date for the daily journal that would `OFFSET' number of `UNIT'
-before `ORG-CURR-DATE'."
+Find the date for the daily journal that would \='OFFSET\=' number of \='UNIT\='
+before \='ORG-CURR-DATE\='."
   (let* ((ocd-date (decode-time (org-time-string-to-time org-curr-date)))
          (ocd-year (nth 5 ocd-date))
          (ocd-month (nth 4 ocd-date))
@@ -607,14 +607,14 @@ window layout."
           (set-register 'org-daily-reflect--old nil)
           (set-register 'org-daily-reflect--old-jumped nil))
       (if (get-register 'org-daily-reflect--mirrors)
-          (progn            
+          (progn
             (window-configuration-to-register
              'org-daily-reflect--old)
             (jump-to-register 'org-daily-reflect--mirrors)
             (set-register 'org-daily-reflect--mirrors nil))
         (user-error "Something went wrong"))))
 
-(defalias 'org-daily-reflection-exit-or-enter-reflecting 'org-daily-reflection-layout-toggle)
+(defalias 'org-daily-reflection-exit-or-enter-reflecting #'org-daily-reflection-layout-toggle)
 
 ;;; various predefined reflection commands
 
